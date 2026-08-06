@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSEC | Offensive Security</title>
+    <title>OSEC | Advanced Offensive Security</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&display=swap');
 
         :root {
-            --bg-color: #07090b;
-            --surface-color: #11151a;
-            --red-team: #dc2626;
-            --khiva-cyan: #06b6d4;
-            --text-main: #e5e7eb;
-            --text-muted: #9ca3af;
+            --bg-color: #030406;
+            --surface-color: #0a0d14;
+            --red-team: #ff2a2a;
+            --red-team-glow: rgba(255, 42, 42, 0.4);
+            --khiva-cyan: #00d2ff;
+            --khiva-cyan-glow: rgba(0, 210, 255, 0.3);
+            --text-main: #f3f4f6;
+            --text-muted: #8b949e;
             --font-mono: 'Fira Code', monospace;
         }
 
@@ -31,17 +33,35 @@
             overflow-x: hidden;
         }
 
-        /* Subtle geometric pattern reminiscent of traditional tilework */
+        /* CRT Scanline Overlay */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* Animated Khorezm Geometry Background */
         .khorezm-pattern {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background-image: 
                 linear-gradient(var(--khiva-cyan) 1px, transparent 1px),
                 linear-gradient(90deg, var(--khiva-cyan) 1px, transparent 1px);
-            background-size: 40px 40px;
-            opacity: 0.03;
+            background-size: 50px 50px;
+            opacity: 0.04;
             z-index: -1;
             pointer-events: none;
+            animation: pulse-grid 8s infinite alternate;
+        }
+
+        @keyframes pulse-grid {
+            0% { opacity: 0.02; transform: scale(1); }
+            100% { opacity: 0.06; transform: scale(1.05); }
         }
 
         header {
@@ -49,224 +69,305 @@
             justify-content: space-between;
             align-items: center;
             padding: 1.5rem 5%;
-            background: rgba(7, 9, 11, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+            background: rgba(3, 4, 6, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 210, 255, 0.15);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
+        /* Glitch Logo */
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--text-main);
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            position: relative;
+            letter-spacing: 2px;
         }
 
-        .logo span {
-            color: var(--red-team);
+        .logo span { color: var(--red-team); }
+
+        .logo:hover { animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-10deg); color: var(--khiva-cyan); }
+            40% { transform: skew(10deg); color: var(--red-team); }
+            60% { transform: skew(-5deg); }
+            80% { transform: skew(5deg); }
+            100% { transform: skew(0deg); }
         }
 
         nav a {
             color: var(--text-muted);
             text-decoration: none;
-            margin-left: 2rem;
-            transition: color 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        nav a:hover {
-            color: var(--khiva-cyan);
-        }
-
-        section {
-            padding: 6rem 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .hero {
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            margin-left: 2.5rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
             position: relative;
         }
 
+        nav a::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: var(--red-team);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        nav a:hover { color: var(--khiva-cyan); text-shadow: 0 0 8px var(--khiva-cyan-glow); }
+        nav a:hover::before { opacity: 1; left: -12px; }
+
+        section { padding: 8rem 5%; max-width: 1200px; margin: 0 auto; }
+
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
         .hero-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: rgba(220, 38, 38, 0.1);
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            background: rgba(255, 42, 42, 0.05);
             color: var(--red-team);
             border: 1px solid var(--red-team);
-            border-radius: 2px;
             font-size: 0.8rem;
-            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
             width: fit-content;
+            box-shadow: 0 0 10px var(--red-team-glow);
+        }
+
+        .hero-badge::before {
+            content: '';
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: var(--red-team);
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { opacity: 1; box-shadow: 0 0 0 0 var(--red-team-glow); }
+            70% { opacity: 0.4; box-shadow: 0 0 0 10px rgba(255, 42, 42, 0); }
+            100% { opacity: 1; }
         }
 
         h1 {
-            font-size: 4rem;
+            font-size: clamp(3rem, 5vw, 5rem);
             line-height: 1.1;
             margin-bottom: 1.5rem;
-            letter-spacing: -2px;
+            text-transform: uppercase;
         }
 
         .typing-container {
             display: inline-block;
             color: var(--khiva-cyan);
-            border-right: 3px solid var(--red-team);
-            padding-right: 5px;
+            border-right: 4px solid var(--red-team);
+            padding-right: 8px;
+            text-shadow: 0 0 15px var(--khiva-cyan-glow);
             animation: blink 1s step-end infinite;
         }
 
-        @keyframes blink {
-            50% { border-color: transparent; }
-        }
+        @keyframes blink { 50% { border-color: transparent; } }
 
         .hero p {
             font-size: 1.1rem;
             color: var(--text-muted);
             max-width: 600px;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
+        /* Cyberpunk Buttons */
         .btn {
             display: inline-block;
-            padding: 0.75rem 2rem;
+            padding: 1rem 2.5rem;
             background: transparent;
             color: var(--khiva-cyan);
             border: 1px solid var(--khiva-cyan);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 1px;
             transition: all 0.3s ease;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
             position: relative;
-            overflow: hidden;
         }
 
         .btn:hover {
-            background: var(--khiva-cyan);
-            color: var(--bg-color);
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+            background: rgba(0, 210, 255, 0.1);
+            box-shadow: inset 0 0 20px var(--khiva-cyan-glow), 0 0 20px var(--khiva-cyan-glow);
         }
 
         .btn-red {
             border-color: var(--red-team);
             color: var(--red-team);
-            margin-left: 1rem;
+            margin-left: 1.5rem;
         }
 
         .btn-red:hover {
-            background: var(--red-team);
-            color: var(--bg-color);
-            box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+            background: rgba(255, 42, 42, 0.1);
+            box-shadow: inset 0 0 20px var(--red-team-glow), 0 0 20px var(--red-team-glow);
         }
 
         .about-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 5rem;
             align-items: center;
-        }
-
-        .terminal-window {
-            background: var(--surface-color);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-
-        .terminal-header {
-            background: #1f2937;
-            padding: 0.5rem 1rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #4b5563;
-        }
-
-        .dot:nth-child(1) { background: var(--red-team); }
-        .dot:nth-child(2) { background: #fbbf24; }
-        .dot:nth-child(3) { background: #10b981; }
-
-        .terminal-body {
-            padding: 1.5rem;
-            font-size: 0.9rem;
-            color: #a7f3d0;
-        }
-
-        .services {
-            background: var(--surface-color);
-            border-top: 1px solid rgba(220, 38, 38, 0.2);
-            border-bottom: 1px solid rgba(220, 38, 38, 0.2);
-            position: relative;
         }
 
         .section-title {
             color: var(--text-main);
-            font-size: 2rem;
-            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
             display: flex;
             align-items: center;
             gap: 1rem;
+            text-transform: uppercase;
         }
 
-        .section-title::before {
-            content: '>>';
-            color: var(--red-team);
+        .section-title::before { content: '0x01 //'; color: var(--red-team); font-size: 1.5rem; }
+        #services .section-title::before { content: '0x02 //'; }
+
+        /* Advanced Terminal Window */
+        .terminal-window {
+            background: #05070a;
+            border: 1px solid #1f2937;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 30px rgba(0, 210, 255, 0.05);
+            position: relative;
+        }
+
+        .terminal-window::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--khiva-cyan), transparent);
+            opacity: 0.5;
+        }
+
+        .terminal-header {
+            background: #0d1117;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        .terminal-title {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-left: auto;
+            margin-right: auto;
+            letter-spacing: 1px;
+        }
+
+        .dots { display: flex; gap: 6px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot:nth-child(1) { background: #ff5f56; }
+        .dot:nth-child(2) { background: #ffbd2e; }
+        .dot:nth-child(3) { background: #27c93f; }
+
+        .terminal-body {
+            padding: 2rem;
+            font-size: 0.95rem;
+            color: #a7f3d0;
+            min-height: 250px;
+        }
+
+        .prompt-line { margin-bottom: 0.5rem; }
+        .user-path { color: var(--khiva-cyan); font-weight: 600; }
+        .command-output { color: var(--text-muted); margin-bottom: 1rem; margin-left: 1rem; }
+        .danger-text { color: var(--red-team); font-weight: 600; }
+
+        .services {
+            background: linear-gradient(to bottom, var(--surface-color), var(--bg-color));
+            border-top: 1px solid rgba(255, 42, 42, 0.15);
+            position: relative;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
         }
 
+        /* Cyber Cards */
         .card {
-            background: var(--bg-color);
-            padding: 2rem;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            background: rgba(5, 7, 10, 0.6);
+            padding: 2.5rem;
+            border: 1px solid #1f2937;
+            position: relative;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: var(--khiva-cyan);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            border-color: var(--red-team);
+            border-color: rgba(0, 210, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(0, 210, 255, 0.05);
         }
+
+        .card:hover::before { transform: scaleX(1); }
+        .card:hover h3 { color: var(--red-team); }
 
         .card h3 {
             color: var(--khiva-cyan);
             margin-bottom: 1rem;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
+            transition: color 0.3s;
+        }
+
+        .card-num {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.03);
         }
 
         footer {
             text-align: center;
-            padding: 3rem 5%;
+            padding: 4rem 5%;
             color: var(--text-muted);
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid #1f2937;
+            background: #000;
         }
 
         .footer-logo {
+            font-size: 2rem;
             margin-bottom: 1rem;
             color: var(--text-main);
+            letter-spacing: 2px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
+            .about-grid { grid-template-columns: 1fr; gap: 3rem; }
             h1 { font-size: 2.5rem; }
-            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-            nav { display: none; } /* Mobile menu implementation omitted for brevity */
+            .btn { display: block; text-align: center; margin: 0 0 1rem 0; width: 100%; }
+            .btn-red { margin-left: 0; }
         }
     </style>
 </head>
@@ -276,69 +377,67 @@
     <header>
         <a href="#" class="logo">OSEC<span>.UZ</span></a>
         <nav>
-            <a href="#about">~/about</a>
-            <a href="#services">~/services</a>
-            <a href="#contact">~/contact</a>
+            <a href="#about">Philosophy</a>
+            <a href="#services">Capabilities</a>
+            <a href="#contact">Engage</a>
         </nav>
     </header>
 
     <section class="hero">
-        <div class="hero-badge">INITIATING BREACH PROTOCOL</div>
+        <div class="hero-badge">ROOT ACCESS GRANTED</div>
         <h1>
             We Don't Defend.<br>
             <span class="typing-container" id="typewriter"></span>
         </h1>
-        <p>A proud member of the Orqoyin family. We build resilience by breaking systems. Advanced red teaming and offensive security engineering, rooted in Khorezm.</p>
+        <p>A proud division of the Orqoyin family. Operating out of Urganch, we engineer specialized offensive operations, advanced red teaming, and custom exploitation to forge unbreakable defenses.</p>
         <div>
-            <a href="#services" class="btn">Explore Capabilities</a>
-            <a href="#contact" class="btn btn-red">Engage Team</a>
+            <a href="#services" class="btn">Explore Vectors</a>
+            <a href="#contact" class="btn btn-red">Initiate Contact</a>
         </div>
     </section>
 
     <section id="about" class="about-grid">
         <div>
             <h2 class="section-title">The 'O' Directive</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1rem;">OSEC stands for two things: <strong>Orqoyin</strong> and <strong>Offensive</strong>. Born in Urganch, we apply the relentless discipline of our educational roots to the unforgiving landscape of modern cyber warfare.</p>
-            <p style="color: var(--text-muted);">We simulate sophisticated, real-world attacks to expose the vulnerabilities your current defenses are blind to. Our infrastructure is custom, our tools are bespoke, and our methodology is uncompromising.</p>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">OSEC represents the dual nature of our existence: <strong>Orqoyin</strong> and <strong>Offensive</strong>. Rooted deeply in the ancient resilience of Khorezm, we apply relentless rigor to the chaos of modern digital warfare.</p>
+            <p style="color: var(--text-muted);">We do not rely on automated scanners. We build custom infrastructure, compile our own tools, and simulate highly sophisticated, targeted attacks to expose critical logic flaws before adversaries do.</p>
         </div>
         <div class="terminal-window">
             <div class="terminal-header">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
+                <div class="dots">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+                <div class="terminal-title">root@osec:~# /bin/bash</div>
             </div>
-            <div class="terminal-body">
-                <p>user@osec:~$ whoami</p>
-                <p>orqoyin_red_team</p>
-                <p>user@osec:~$ cat /etc/location</p>
-                <p>Urganch, Khorezm Region, UZ</p>
-                <p>user@osec:~$ ./execute_philosophy.sh</p>
-                <p style="color: var(--red-team);">[!] Warning: Offensive measures activated.</p>
-                <p>> Target identified: Legacy infrastructure.</p>
-                <p>> Exploit deployed.</p>
+            <div class="terminal-body" id="term-body">
+                <!-- Populated by JS -->
             </div>
         </div>
     </section>
 
     <div class="services">
         <section id="services">
-            <h2 class="section-title">Capabilities</h2>
+            <h2 class="section-title">Attack Vectors</h2>
             <div class="grid">
                 <div class="card">
-                    <h3>01. Red Teaming</h3>
-                    <p class="text-muted">Full-scope, multi-layered attack simulations designed to measure how well your people, networks, and physical security controls can withstand a targeted assault.</p>
+                    <div class="card-num">01</div>
+                    <h3>Advanced Red Teaming</h3>
+                    <p class="text-muted">Full-spectrum, objective-based attack simulations bypassing standard security controls to test your organization's physical, human, and cyber resilience.</p>
                 </div>
                 <div class="card">
-                    <h3>02. RAG & AI Exploitation</h3>
-                    <p class="text-muted">Specialized penetration testing targeting Retrieval-Augmented Generation pipelines and local AI models to prevent data exfiltration and prompt injection.</p>
+                    <div class="card-num">02</div>
+                    <h3>RAG & AI Exploitation</h3>
+                    <p class="text-muted">Specialized penetration testing targeting AI models and Retrieval-Augmented Generation pipelines. We weaponize prompts to prevent real-world data exfiltration.</p>
                 </div>
                 <div class="card">
-                    <h3>03. Supply Chain Compromise</h3>
-                    <p class="text-muted">Simulating advanced persistent threats (APTs) through open-source software dependencies and custom Linux OS vulnerability mapping.</p>
+                    <div class="card-num">03</div>
+                    <h3>Supply Chain Compromise</h3>
+                    <p class="text-muted">Emulating APT behavior by auditing deep dependencies, custom OS configurations, and identifying lateral movement vectors within internal environments.</p>
                 </div>
                 <div class="card">
-                    <h3>04. SOC Forensics & Emulation</h3>
-                    <p class="text-muted">Testing the limits of your Security Operations Center. We attack, we leave traces, and we train your blue team to find them.</p>
+                    <div class="card-num">04</div>
+                    <h3>SOC Forensics Emulation</h3>
+                    <p class="text-muted">We construct bespoke malware and controlled forensic artifacts to stress-test your Security Operations Center's detection and incident response capabilities.</p>
                 </div>
             </div>
         </section>
@@ -346,57 +445,103 @@
 
     <footer id="contact">
         <h2 class="footer-logo">OSEC<span>.UZ</span></h2>
-        <p>Part of the Orqoyin Family</p>
-        <p style="margin-top: 1rem;">Urganch, Khorezm Region, Uzbekistan</p>
-        <p style="margin-top: 2rem; font-size: 0.8rem; opacity: 0.5;">&copy; 2026 OSEC. All rights reserved.</p>
+        <p style="color: var(--khiva-cyan);">>> Offensive Security // Orqoyin Family</p>
+        <p style="margin-top: 1rem;">Urganch, Khorezm Region, Republic of Uzbekistan</p>
+        <p style="margin-top: 2rem; font-size: 0.8rem; opacity: 0.4;">[CONNECTION TERMINATED] &copy; 2026 OSEC.</p>
     </footer>
 
     <script>
-        const texts = [
-            "We Attack.",
-            "We Exploit.",
-            "We Exfiltrate.",
-            "We Emulate."
-        ];
+        // Hero Typewriter Effect
+        const heroTexts = ["We Attack.", "We Exploit.", "We Bypass.", "We Compromise."];
+        let hCount = 0, hIndex = 0, hIsDeleting = false;
         
-        let count = 0;
-        let index = 0;
-        let currentText = "";
-        let letter = "";
-        let isDeleting = false;
-        
-        const typeWriter = () => {
-            if (count === texts.length) {
-                count = 0;
-            }
+        function heroTypeWriter() {
+            const current = heroTexts[hCount];
+            let typeSpeed = hIsDeleting ? 40 : 100;
             
-            currentText = texts[count];
-            
-            if (isDeleting) {
-                letter = currentText.slice(0, --index);
+            if (hIsDeleting) {
+                document.getElementById("typewriter").textContent = current.substring(0, hIndex - 1);
+                hIndex--;
             } else {
-                letter = currentText.slice(0, ++index);
+                document.getElementById("typewriter").textContent = current.substring(0, hIndex + 1);
+                hIndex++;
             }
             
-            document.getElementById("typewriter").textContent = letter;
-            
-            let typeSpeed = isDeleting ? 50 : 100;
-            
-            if (!isDeleting && letter.length === currentText.length) {
-                typeSpeed = 2000; // Pause at end
-                isDeleting = true;
-            } else if (isDeleting && letter.length === 0) {
-                isDeleting = false;
-                count++;
-                typeSpeed = 500; // Pause before new word
+            if (!hIsDeleting && hIndex === current.length) {
+                typeSpeed = 2000;
+                hIsDeleting = true;
+            } else if (hIsDeleting && hIndex === 0) {
+                hIsDeleting = false;
+                hCount = (hCount + 1) % heroTexts.length;
+                typeSpeed = 400;
             }
+            setTimeout(heroTypeWriter, typeSpeed);
+        }
+
+        // Terminal Auto-Typing Logic (Triggers on Scroll)
+        const termLines = [
+            { text: "whoami", type: "cmd" },
+            { text: "orqoyin_red_team", type: "out" },
+            { text: "cat /etc/location", type: "cmd" },
+            { text: "Khorezm.Urganch // Target Acquired", type: "out" },
+            { text: "./rust_exploit --target rag_pipeline --verbose", type: "cmd" },
+            { text: "[*] Initializing memory corruption payload...", type: "out" },
+            { text: "[+] Sandbox bypassed successfully.", type: "out" },
+            { text: "[!] ROOT SHELL SPAWNED", type: "danger" }
+        ];
+
+        let tLine = 0;
+        let tChar = 0;
+        let termHasRun = false;
+        const termContainer = document.getElementById('term-body');
+
+        function typeTerminal() {
+            if (tLine >= termLines.length) return;
+
+            const lineData = termLines[tLine];
             
-            setTimeout(typeWriter, typeSpeed);
-        };
-        
-        // Initialize typing effect
+            if (lineData.type === "cmd") {
+                if (tChar === 0) {
+                    const div = document.createElement('div');
+                    div.className = 'prompt-line';
+                    div.innerHTML = `<span class="user-path">root@osec:~$</span> <span id="cmd-${tLine}"></span><span class="typing-cursor">_</span>`;
+                    termContainer.appendChild(div);
+                }
+                
+                document.getElementById(`cmd-${tLine}`).textContent += lineData.text.charAt(tChar);
+                tChar++;
+
+                if (tChar < lineData.text.length) {
+                    setTimeout(typeTerminal, Math.random() * 50 + 30);
+                } else {
+                    document.querySelector('.typing-cursor').remove();
+                    tChar = 0;
+                    tLine++;
+                    setTimeout(typeTerminal, 400);
+                }
+            } else {
+                const div = document.createElement('div');
+                div.className = lineData.type === "danger" ? "command-output danger-text" : "command-output";
+                div.textContent = lineData.text;
+                termContainer.appendChild(div);
+                tLine++;
+                setTimeout(typeTerminal, 200);
+            }
+        }
+
+        // Intersection Observer for Terminal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !termHasRun) {
+                    termHasRun = true;
+                    setTimeout(typeTerminal, 500);
+                }
+            });
+        }, { threshold: 0.5 });
+
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(typeWriter, 1000);
+            setTimeout(heroTypeWriter, 800);
+            observer.observe(document.querySelector('.terminal-window'));
         });
     </script>
 </body>
