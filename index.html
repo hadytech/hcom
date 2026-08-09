@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ORQOYIN | Next-Generation Infrastructure</title>
+    <title>OSEC.uz | Advanced Offensive Security & Red Teaming</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,800;1,400&family=Syne:wght@700;800&display=swap');
 
         :root {
-            --bg-base: #030305;
-            --bg-surface: #0a0b10;
-            --bg-surface-elevated: rgba(25, 27, 38, 0.4);
-            --accent-primary: #00e5ff;
-            --accent-secondary: #7000ff;
-            --text-primary: #ffffff;
-            --text-secondary: #8b90a0;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --glass-bg: rgba(10, 11, 16, 0.7);
+            --bg-base: #020305;
+            --bg-surface: #07090f;
+            --bg-surface-glow: rgba(255, 42, 42, 0.03);
+            --red-team: #ff2a2a;
+            --red-team-glow: rgba(255, 42, 42, 0.35);
+            --khiva-cyan: #00f0ff;
+            --khiva-cyan-glow: rgba(0, 240, 255, 0.25);
+            --text-main: #f0f4f8;
+            --text-muted: #6b7280;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-heading: 'Syne', sans-serif;
         }
 
         * {
@@ -27,48 +30,32 @@
 
         body {
             background-color: var(--bg-base);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            font-family: var(--font-mono);
             line-height: 1.6;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 2027 Ambient Background */
-        .ambient-glow {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 80vw;
-            height: 80vh;
-            transform: translate(-50%, -50%);
-            background: radial-gradient(circle, rgba(112, 0, 255, 0.15) 0%, rgba(0, 229, 255, 0.05) 40%, transparent 70%);
-            filter: blur(120px);
-            z-index: -2;
+        /* CRT Scanline & Grid Overlays */
+        body::after {
+            content: " "; display: block; position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 255, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 999; background-size: 100% 2px, 3px 100%;
             pointer-events: none;
-            animation: pulse-glow 10s ease-in-out infinite alternate;
         }
 
-        .grid-overlay {
+        .threat-grid {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-image: 
-                linear-gradient(var(--border-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
-            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+                linear-gradient(rgba(255, 42, 42, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+            background-size: 45px 45px;
             z-index: -1;
-            opacity: 0.5;
             pointer-events: none;
-        }
-
-        @keyframes pulse-glow {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
         }
 
         /* Navigation */
@@ -76,52 +63,78 @@
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 1.5rem 5%;
+            padding: 1.25rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
+            background: rgba(2, 3, 5, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
             z-index: 100;
         }
 
-        .brand {
-            font-family: 'Space Grotesk', sans-serif;
+        .logo {
+            font-family: var(--font-heading);
             font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--text-primary);
+            font-weight: 800;
+            color: var(--text-main);
             text-decoration: none;
+            letter-spacing: 2px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .brand::before {
-            content: '';
-            display: block;
-            width: 12px;
-            height: 12px;
-            background: var(--accent-primary);
-            border-radius: 2px;
-            box-shadow: 0 0 10px var(--accent-primary);
+        .logo span {
+            color: var(--red-team);
+            text-shadow: 0 0 10px var(--red-team-glow);
+        }
+
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--red-team);
+            box-shadow: 0 0 10px var(--red-team);
+            animation: pulse-dot 1s infinite alternate;
+        }
+
+        @keyframes pulse-dot {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
         }
 
         nav a {
-            color: var(--text-secondary);
+            color: var(--text-muted);
             text-decoration: none;
             margin-left: 2rem;
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s;
+            letter-spacing: 1.5px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a::before {
+            content: '>';
+            position: absolute;
+            left: -12px;
+            color: var(--red-team);
+            opacity: 0;
+            transition: 0.3s;
         }
 
         nav a:hover {
-            color: var(--text-primary);
+            color: var(--khiva-cyan);
+            text-shadow: 0 0 8px var(--khiva-cyan-glow);
+        }
+
+        nav a:hover::before {
+            opacity: 1;
         }
 
         /* Hero Section */
@@ -131,367 +144,636 @@
             flex-direction: column;
             justify-content: center;
             padding: 0 5%;
-            max-width: 1400px;
+            max-width: 1300px;
             margin: 0 auto;
             position: relative;
         }
 
-        .status-badge {
+        .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            background: rgba(0, 229, 255, 0.1);
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            border-radius: 100px;
+            padding: 0.35rem 1rem;
+            background: rgba(255, 42, 42, 0.08);
+            color: var(--red-team);
+            border: 1px solid rgba(255, 42, 42, 0.3);
             font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--accent-primary);
+            letter-spacing: 2px;
             margin-bottom: 2rem;
             width: fit-content;
+            box-shadow: 0 0 15px rgba(255, 42, 42, 0.15);
         }
-
-        .status-badge .dot {
-            width: 6px;
-            height: 6px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-primary);
-            animation: blink 2s infinite;
-        }
-
-        @keyframes blink { 50% { opacity: 0.4; } }
 
         h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-family: var(--font-heading);
+            font-size: clamp(2.5rem, 6vw, 5.5rem);
             line-height: 1.05;
-            letter-spacing: -1px;
             margin-bottom: 1.5rem;
-            max-width: 1000px;
-            background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.5) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .typing-target {
+            color: var(--khiva-cyan);
+            border-right: 3px solid var(--red-team);
+            padding-right: 4px;
+            text-shadow: 0 0 15px var(--khiva-cyan-glow);
         }
 
         .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 600px;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 650px;
             margin-bottom: 3rem;
         }
 
-        /* Bento Grid Section */
-        .section-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2rem;
-            margin-bottom: 2rem;
+        .btn-group {
             display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .section-title::before {
-            content: '';
-            height: 2px;
-            width: 40px;
-            background: var(--accent-primary);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 5rem 5%;
-        }
-
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-auto-rows: minmax(300px, auto);
             gap: 1.5rem;
-        }
-
-        .bento-card {
-            background: var(--bg-surface-elevated);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 2.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.4s;
-            backdrop-filter: blur(10px);
-        }
-
-        .bento-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .bento-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 255, 255, 0.06), transparent 40%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-
-        .bento-card:hover::before {
-            opacity: 1;
-        }
-
-        .bento-card.wide {
-            grid-column: span 2;
-        }
-
-        .bento-icon {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            display: inline-block;
-        }
-
-        .bento-card h3 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .bento-card p {
-            color: var(--text-secondary);
-            font-size: 1rem;
-        }
-
-        .tech-stack {
-            display: flex;
-            gap: 10px;
-            margin-top: 1.5rem;
             flex-wrap: wrap;
         }
 
-        .tech-badge {
-            padding: 4px 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 4px;
-            font-size: 0.8rem;
-            color: var(--text-primary);
-            font-family: monospace;
-        }
-
-        /* Leadership & Connections */
-        .connect-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .link-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
-            border: 1px solid var(--border-color);
-            padding: 2rem;
-            border-radius: 16px;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--khiva-cyan);
+            border: 1px solid rgba(0, 240, 255, 0.3);
             text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.85rem;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
             position: relative;
-            overflow: hidden;
         }
 
-        .link-card::after {
-            content: '↗';
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            opacity: 0.3;
-            transition: all 0.3s;
+        .btn:hover {
+            background: rgba(0, 240, 255, 0.08);
+            border-color: var(--khiva-cyan);
+            box-shadow: 0 0 20px var(--khiva-cyan-glow);
+            transform: translateY(-2px);
         }
 
-        .link-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--accent-primary);
+        .btn-red {
+            border-color: rgba(255, 42, 42, 0.4);
+            color: var(--red-team);
         }
 
-        .link-card:hover::after {
-            opacity: 1;
-            color: var(--accent-primary);
-            transform: translate(2px, -2px);
+        .btn-red:hover {
+            background: rgba(255, 42, 42, 0.08);
+            border-color: var(--red-team);
+            box-shadow: 0 0 20px var(--red-team-glow);
         }
 
-        .link-card h4 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
+        /* Container & Grid Layouts */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 6rem 5%;
         }
 
-        .link-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .link-card .role {
-            font-size: 0.75rem;
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--accent-secondary);
-            margin-bottom: 1rem;
+        }
+
+        .section-title::before {
+            content: '0x01 //';
+            color: var(--red-team);
+            font-size: 1.2rem;
+            font-family: var(--font-mono);
+        }
+
+        #vectors .section-title::before { content: '0x02 //'; }
+        #comms .section-title::before { content: '0x03 //'; }
+
+        /* About & Terminal Section */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .about-text strong {
+            color: var(--text-main);
             font-weight: 600;
+        }
+
+        .about-text p + p {
+            margin-top: 1.5rem;
+        }
+
+        /* Terminal Window */
+        .terminal-window {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 25px rgba(255, 42, 42, 0.04);
+            position: relative;
+        }
+
+        .terminal-window::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--red-team), transparent);
+            opacity: 0.6;
+        }
+
+        .terminal-header {
+            background: rgba(12, 15, 23, 0.9);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .dots { display: flex; gap: 6px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot:nth-child(1) { background: #ff5f56; }
+        .dot:nth-child(2) { background: #ffbd2e; }
+        .dot:nth-child(3) { background: #27c93f; }
+
+        .terminal-title {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin: 0 auto;
+            letter-spacing: 1px;
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            color: #a7f3d0;
+            min-height: 280px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .prompt-line { margin-bottom: 0.4rem; }
+        .user-path { color: var(--khiva-cyan); font-weight: 600; }
+        .command-output { color: var(--text-muted); margin-bottom: 0.8rem; margin-left: 1rem; }
+        .danger-text { color: var(--red-team); font-weight: 600; text-shadow: 0 0 8px var(--red-team-glow); }
+
+        /* Attack Vectors Grid */
+        .vectors-section {
+            background: linear-gradient(to bottom, var(--bg-base), var(--bg-surface));
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .attack-card {
+            background: rgba(7, 9, 15, 0.6);
+            border: 1px solid var(--border-subtle);
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .attack-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--red-team);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .attack-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 42, 42, 0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(255, 42, 42, 0.05);
+        }
+
+        .attack-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .attack-card h3 {
+            font-family: var(--font-heading);
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            transition: color 0.3s;
+        }
+
+        .attack-card:hover h3 {
+            color: var(--red-team);
+        }
+
+        .attack-card p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+        }
+
+        .card-num {
+            position: absolute;
+            top: 1.5rem; right: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.03);
+            font-family: var(--font-heading);
+        }
+
+        /* Comms / Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 4rem;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .info-block h4 {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-bottom: 0.4rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .info-block p {
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }
+
+        .info-block a {
+            color: var(--khiva-cyan);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .info-block a:hover {
+            color: var(--red-team);
+            text-shadow: 0 0 10px var(--red-team-glow);
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            padding: 2.5rem;
+            border-radius: 4px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            color: var(--khiva-cyan);
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+        }
+
+        .input-group label::before {
+            content: '>';
+            color: var(--red-team);
+            margin-right: 8px;
+        }
+
+        .input-group input, 
+        .input-group textarea {
+            background: rgba(2, 3, 5, 0.9);
+            border: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--khiva-cyan);
+            color: var(--text-main);
+            padding: 0.9rem 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus, 
+        .input-group textarea:focus {
+            border-color: var(--khiva-cyan);
+            box-shadow: 0 5px 15px rgba(0, 240, 255, 0.1);
+        }
+
+        /* Ecosystem / Parent Network Bar */
+        .ecosystem-bar {
+            background: #010204;
+            border-top: 1px solid var(--border-subtle);
+            padding: 3rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .eco-brand {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            letter-spacing: 1px;
+            color: var(--text-main);
+        }
+
+        .eco-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .eco-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .eco-links a:hover {
+            color: var(--khiva-cyan);
         }
 
         /* Footer */
         footer {
-            border-top: 1px solid var(--border-color);
+            text-align: center;
             padding: 2rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            background: var(--bg-surface);
-        }
-
-        .sys-info span {
-            margin-right: 1.5rem;
-            font-family: monospace;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-subtle);
+            background: #000;
+            font-size: 0.8rem;
         }
 
         /* Responsive */
-        @media (max-width: 1024px) {
-            .bento-grid { grid-template-columns: repeat(2, 1fr); }
-            .bento-card.wide { grid-column: span 2; }
+        @media (max-width: 900px) {
+            .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .ecosystem-bar { flex-direction: column; align-items: flex-start; }
         }
 
         @media (max-width: 768px) {
-            .bento-grid { grid-template-columns: 1fr; }
-            .bento-card.wide { grid-column: span 1; }
-            .connect-grid { grid-template-columns: 1fr; }
-            header { flex-direction: column; gap: 1rem; padding: 1rem; }
-            nav a { margin: 0 1rem; }
-            footer { flex-direction: column; gap: 1rem; text-align: center; }
-            .sys-info span { display: block; margin: 0.5rem 0; }
+            nav { display: none; } /* Simplified mobile for robustness */
+            .btn-group { flex-direction: column; width: 100%; }
+            .btn { width: 100%; text-align: center; }
+            section { padding: 4rem 5%; }
         }
     </style>
 </head>
 <body>
 
-    <div class="ambient-glow"></div>
-    <div class="grid-overlay"></div>
+    <div class="threat-grid"></div>
 
     <header>
-        <a href="#" class="brand">ORQOYIN</a>
+        <a href="#" class="logo">
+            <div class="logo-dot"></div>
+            OSEC<span>.UZ</span>
+        </a>
         <nav>
-            <a href="#infrastructure">Infrastructure</a>
-            <a href="#leadership">Network</a>
+            <a href="#about">The Directive</a>
+            <a href="#vectors">Vectors</a>
+            <a href="#comms">Comms</a>
+            <a href="http://orqoyin.uz" target="_blank">Orqoyin HQ</a>
         </nav>
     </header>
 
     <section class="hero">
-        <div class="status-badge">
-            <div class="dot"></div>
-            SYSTEM STATUS: ONLINE // 2027.1
+        <div class="hero-badge">OFFENSIVE SECURITY OPERATIONS // URGENCH, UZ</div>
+        <h1>We Don't Defend.<br><span class="typing-target" id="typewriter"></span></h1>
+        <p>A specialized red team division of the Orqoyin ecosystem. We engineer custom exploitation vectors, weaponize payloads, and shatter perimeter illusions before real adversaries do.</p>
+        <div class="btn-group">
+            <a href="#vectors" class="btn btn-red">Explore Vectors</a>
+            <a href="#comms" class="btn">Initiate Handshake</a>
         </div>
-        <h1>Architecting digital resilience. Accelerating human potential.</h1>
-        <p>Merging deep linguistic intelligence with bleeding-edge full-stack architecture and zero-trust protocols at the edge of tomorrow.</p>
     </section>
 
-    <section id="infrastructure" class="container">
-        <h2 class="section-title">Core Verticals</h2>
-        <div class="bento-grid">
+    <section id="about" class="container">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2 class="section-title" style="margin-bottom: 1.5rem;">The 'O' Directive</h2>
+                <p>OSEC.uz represents unyielding offensive rigor. Rooted in Khorezmian resilience and built for modern digital warfare, we bypass automated scanners and generic checklists.</p>
+                <p>We craft custom tooling, emulate targeted APT behavior, and dismantle multi-layered architectures with surgical precision.</p>
+            </div>
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="terminal-title">root@osec-core:~# /bin/bash</div>
+                </div>
+                <div class="terminal-body" id="term-body"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="vectors-section" id="vectors">
+        <section class="container">
+            <h2 class="section-title">Attack Vectors</h2>
+            <div class="cards-grid">
+                <div class="attack-card">
+                    <div class="card-num">01</div>
+                    <h3>Advanced Red Teaming</h3>
+                    <p>Objective-driven breach simulations bypassing strict perimeter controls to measure enterprise resilience across physical, human, and digital realms.</p>
+                </div>
+                <div class="attack-card">
+                    <div class="card-num">02</div>
+                    <h3>AI & RAG Exploitation</h3>
+                    <p>Targeted prompt injection, model extraction, and retrieval-augmented pipeline manipulation to prevent live data exfiltration.</p>
+                </div>
+                <div class="attack-card">
+                    <div class="card-num">03</div>
+                    <h3>APT Emulation & Malware</h3>
+                    <p>Bespoke offensive tooling and custom malware crafting designed to stress-test SOC detection rules and incident response playbooks.</p>
+                </div>
+                <div class="attack-card">
+                    <div class="card-num">04</div>
+                    <h3>Supply Chain Compromise</h3>
+                    <p>Deep dependency auditing, custom OS vulnerability assessment, and lateral movement tracing within internal networks.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section id="comms" class="container">
+        <h2 class="section-title">Secure Comms</h2>
+        <div class="contact-grid">
+            <div class="contact-info">
+                <div class="info-block">
+                    <h4>Direct Protocol</h4>
+                    <p><a href="mailto:offseckh@icloud.com">offseckh@icloud.com</a></p>
+                </div>
+                <div class="info-block">
+                    <h4>Encrypted Channel</h4>
+                    <p><a href="https://t.me/osecuz" target="_blank">t.me/osecuz</a></p>
+                </div>
+                <div class="info-block">
+                    <h4>Parent Corporation</h4>
+                    <p><a href="http://orqoyin.uz" target="_blank">orqoyin.uz</a> // Urgench, Uz</p>
+                </div>
+                <div class="info-block">
+                    <h4>PGP Key Fingerprint</h4>
+                    <p style="font-size: 0.8rem; color: var(--red-team); word-break: break-all;">A1B2 C3D4 E5F6 7890 1234 5678 90AB CDEF</p>
+                </div>
+            </div>
             
-            <div class="bento-card wide">
-                <span class="bento-icon">⚡</span>
-                <h3>Systems Architecture</h3>
-                <p>Engineering high-concurrency applications, robust local AI deployments, and custom hybrid operating systems. Building the foundation for digital sovereignty.</p>
-                <div class="tech-stack">
-                    <span class="tech-badge">Rust</span>
-                    <span class="tech-badge">Vue 3</span>
-                    <span class="tech-badge">Nuxt.js</span>
-                    <span class="tech-badge">Tauri</span>
-                    <span class="tech-badge">Django</span>
+            <form class="contact-form" onsubmit="event.preventDefault(); submitPayload();">
+                <div class="input-group">
+                    <label>TARGET ALIAS // ENTITY</label>
+                    <input type="text" required placeholder="Organization or handle...">
                 </div>
-            </div>
-
-            <div class="bento-card">
-                <span class="bento-icon">🛡️</span>
-                <h3>Sec-Ops & Forensics</h3>
-                <p>Advanced threat modeling, comprehensive log analysis, and live simulated network testing environments. Zero-trust by design.</p>
-            </div>
-
-            <div class="bento-card wide">
-                <span class="bento-icon">🌍</span>
-                <h3>Linguistic Intelligence</h3>
-                <p>Deep morphological analysis, localized language processing models, and modern speech variations engineered for native AI integrations.</p>
-            </div>
-
-            <div class="bento-card" style="background: linear-gradient(135deg, rgba(0,229,255,0.1) 0%, rgba(112,0,255,0.05) 100%);">
-                <span class="bento-icon">📍</span>
-                <h3>Edge Deployment</h3>
-                <p>Operating out of Urgench, UZ. Bringing enterprise-grade infrastructure to emerging technological frontiers.</p>
-            </div>
-
+                <div class="input-group">
+                    <label>RETURN VECTOR</label>
+                    <input type="text" required placeholder="Secure email or messenger ID...">
+                </div>
+                <div class="input-group">
+                    <label>PAYLOAD SCOPE</label>
+                    <textarea rows="4" required placeholder="Outline target parameters..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-red" id="submit-btn" style="width: 100%; margin-top: 0.5rem;">Encrypt & Transmit</button>
+            </form>
         </div>
     </section>
 
-    <section id="leadership" class="container" style="padding-top: 0;">
-        <h2 class="section-title">Leadership & Connectivity</h2>
-        <div class="connect-grid">
-            
-            <a href="http://orqoyin.uz" target="_blank" class="link-card" style="border-color: rgba(0, 229, 255, 0.3);">
-                <div>
-                    <div class="role">Parent Entity // HQ</div>
-                    <h4>ORQOYIN.UZ</h4>
-                    <p>The central nexus for elite training, hardware-software integration, and technological empowerment.</p>
-                </div>
-            </a>
-
-            <a href="https://t.me/hidoyatiyy" target="_blank" class="link-card">
-                <div>
-                    <div class="role">Founder & Chief Architect</div>
-                    <h4>Hidoyatxon Atabaev</h4>
-                    <p>Direct Telegram Comm-Link for visionary collaboration, architectural discourse, and inquiries.</p>
-                </div>
-            </a>
-
-            <a href="https://x.com/abulghazy" target="_blank" class="link-card" style="grid-column: 1 / -1; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-                <div>
-                    <div class="role">Global Feed</div>
-                    <h4>@abulghazy on X</h4>
-                    <p style="max-width: 600px;">Public broadcasts, structural updates, and industry insights directly from the architect.</p>
-                </div>
-            </a>
-
+    <div class="ecosystem-bar">
+        <div class="eco-brand">OSEC.uz // PART OF THE ORQOYIN FAMILY</div>
+        <div class="eco-links">
+            <a href="http://orqoyin.uz" target="_blank">orqoyin.uz</a>
+            <a href="https://t.me/hidoyatiyy" target="_blank">Telegram: @hidoyatiyy</a>
+            <a href="https://x.com/abulghazy" target="_blank">X: @abulghazy</a>
         </div>
-    </section>
+    </div>
 
     <footer>
-        <div class="sys-info">
-            <span>NODE: URGENCH, UZ</span>
-            <span>ENV: PRODUCTION</span>
-            <span>ENCRYPTION: ACTIVE</span>
-        </div>
-        <div>
-            &copy; 2027 ORQOYIN. All rights reserved.
-        </div>
+        <p>[CONNECTION ENCRYPTED & SECURED] &copy; 2027 OSEC.UZ. ALL RIGHTS RESERVED.</p>
     </footer>
 
     <script>
-        // Interactive Bento Hover Effect (2027 feel)
-        document.querySelectorAll('.bento-card').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
+        // Typewriter Effect
+        const heroTexts = ["We Attack.", "We Exploit.", "We Bypass.", "We Compromise."];
+        let hCount = 0, hIndex = 0, hIsDeleting = false;
+        
+        function heroTypeWriter() {
+            const current = heroTexts[hCount];
+            let typeSpeed = hIsDeleting ? 40 : 100;
+            
+            if (hIsDeleting) {
+                document.getElementById("typewriter").textContent = current.substring(0, hIndex - 1);
+                hIndex--;
+            } else {
+                document.getElementById("typewriter").textContent = current.substring(0, hIndex + 1);
+                hIndex++;
+            }
+            
+            if (!hIsDeleting && hIndex === current.length) {
+                typeSpeed = 2000; hIsDeleting = true;
+            } else if (hIsDeleting && hIndex === 0) {
+                hIsDeleting = false; hCount = (hCount + 1) % heroTexts.length; typeSpeed = 400;
+            }
+            setTimeout(heroTypeWriter, typeSpeed);
+        }
+
+        // Terminal Automated Sequence
+        const termLines = [
+            { text: "whoami", type: "cmd" },
+            { text: "osec_red_team_operator", type: "out" },
+            { text: "cat /etc/location", type: "cmd" },
+            { text: "Urgench.Khorezm // Perimeter Breach Active", type: "out" },
+            { text: "./custom_payload --target enterprise_net --stealth", type: "cmd" },
+            { text: "[*] Injecting shellcode into memory sectors...", type: "out" },
+            { text: "[+] Egress tunnels established successfully.", type: "out" },
+            { text: "[!] ROOT PRIVILEGES ACQUIRED", type: "danger" }
+        ];
+
+        let tLine = 0, tChar = 0, termHasRun = false;
+        const termContainer = document.getElementById('term-body');
+
+        function typeTerminal() {
+            if (tLine >= termLines.length) return;
+            const lineData = termLines[tLine];
+            
+            if (lineData.type === "cmd") {
+                if (tChar === 0) {
+                    const div = document.createElement('div');
+                    div.className = 'prompt-line';
+                    div.innerHTML = `<span class="user-path">root@osec:~#</span> <span id="cmd-${tLine}"></span><span class="typing-cursor">_</span>`;
+                    termContainer.appendChild(div);
+                }
+                
+                document.getElementById(`cmd-${tLine}`).textContent += lineData.text.charAt(tChar);
+                tChar++;
+
+                if (tChar < lineData.text.length) {
+                    setTimeout(typeTerminal, Math.random() * 40 + 20);
+                } else {
+                    const cursor = termContainer.querySelector('.typing-cursor');
+                    if(cursor) cursor.remove();
+                    tChar = 0; tLine++;
+                    setTimeout(typeTerminal, 400);
+                }
+            } else {
+                const div = document.createElement('div');
+                div.className = lineData.type === "danger" ? "command-output danger-text" : "command-output";
+                div.textContent = lineData.text;
+                termContainer.appendChild(div);
+                tLine++;
+                setTimeout(typeTerminal, 250);
+            }
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !termHasRun) {
+                    termHasRun = true;
+                    setTimeout(typeTerminal, 300);
+                }
             });
+        }, { threshold: 0.4 });
+
+        function submitPayload() {
+            const btn = document.getElementById('submit-btn');
+            btn.textContent = "[ ENCRYPTING PAYLOAD... ]";
+            btn.style.color = "var(--text-main)";
+            
+            setTimeout(() => {
+                btn.textContent = "PAYLOAD DELIVERED // ACKNOWLEDGED";
+                btn.style.backgroundColor = "rgba(0, 240, 255, 0.15)";
+                btn.style.color = "var(--khiva-cyan)";
+                btn.style.borderColor = "var(--khiva-cyan)";
+                document.querySelector('.contact-form').reset();
+                
+                setTimeout(() => {
+                    btn.textContent = "Encrypt & Transmit";
+                    btn.style = "width: 100%; margin-top: 0.5rem;";
+                }, 3500);
+            }, 1500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(heroTypeWriter, 600);
+            observer.observe(document.querySelector('.terminal-window'));
         });
     </script>
 </body>
