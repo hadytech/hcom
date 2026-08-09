@@ -3,471 +3,495 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSEC | Advanced Offensive Security</title>
+    <title>ORQOYIN | Next-Generation Infrastructure</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap');
 
         :root {
-            --bg-color: #030406;
-            --surface-color: #0a0d14;
-            --red-team: #ff2a2a;
-            --red-team-glow: rgba(255, 42, 42, 0.4);
-            --khiva-cyan: #00d2ff;
-            --khiva-cyan-glow: rgba(0, 210, 255, 0.3);
-            --text-main: #f3f4f6;
-            --text-muted: #8b949e;
-            --font-mono: 'Fira Code', monospace;
+            --bg-base: #030305;
+            --bg-surface: #0a0b10;
+            --bg-surface-elevated: rgba(25, 27, 38, 0.4);
+            --accent-primary: #00e5ff;
+            --accent-secondary: #7000ff;
+            --text-primary: #ffffff;
+            --text-secondary: #8b90a0;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(10, 11, 16, 0.7);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-mono);
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
             line-height: 1.6;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* CRT Scanline Overlay */
-        body::after {
-            content: " "; display: block; position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 999; background-size: 100% 2px, 3px 100%;
+        /* 2027 Ambient Background */
+        .ambient-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vh;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.15) 0%, rgba(0, 229, 255, 0.05) 40%, transparent 70%);
+            filter: blur(120px);
+            z-index: -2;
+            pointer-events: none;
+            animation: pulse-glow 10s ease-in-out infinite alternate;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            z-index: -1;
+            opacity: 0.5;
             pointer-events: none;
         }
 
-        /* Animated Khorezm Geometry Background */
-        .khorezm-pattern {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                linear-gradient(var(--khiva-cyan) 1px, transparent 1px),
-                linear-gradient(90deg, var(--khiva-cyan) 1px, transparent 1px);
-            background-size: 50px 50px; opacity: 0.04; z-index: -1;
-            animation: pulse-grid 8s infinite alternate;
-        }
-
-        @keyframes pulse-grid {
-            0% { opacity: 0.02; transform: scale(1); }
-            100% { opacity: 0.06; transform: scale(1.05); }
-        }
-
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1.5rem 5%; background: rgba(3, 4, 6, 0.85);
-            backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 210, 255, 0.15);
-            position: sticky; top: 0; z-index: 100;
-        }
-
-        /* Logo & Glitch */
-        .logo {
-            font-size: 1.8rem; font-weight: 700; color: var(--text-main);
-            text-decoration: none; position: relative; letter-spacing: 2px;
-        }
-        .logo span { color: var(--red-team); }
-        .logo:hover { animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; }
-
-        @keyframes glitch-skew {
-            0% { transform: skew(0deg); }
-            20% { transform: skew(-10deg); color: var(--khiva-cyan); }
-            40% { transform: skew(10deg); color: var(--red-team); }
-            60% { transform: skew(-5deg); }
-            80% { transform: skew(5deg); }
-            100% { transform: skew(0deg); }
+        @keyframes pulse-glow {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
         }
 
         /* Navigation */
-        nav { display: flex; align-items: center; }
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand::before {
+            content: '';
+            display: block;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-primary);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+
         nav a {
-            color: var(--text-muted); text-decoration: none; margin-left: 2.5rem;
-            text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;
-            transition: all 0.3s ease; position: relative;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
         }
-        nav a::before {
-            content: '>'; position: absolute; left: -15px;
-            color: var(--red-team); opacity: 0; transition: 0.3s;
-        }
-        nav a:hover { color: var(--khiva-cyan); text-shadow: 0 0 8px var(--khiva-cyan-glow); }
-        nav a:hover::before { opacity: 1; left: -12px; }
 
-        /* Mobile Menu Toggle */
-        .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 101; }
-        .menu-toggle span { display: block; width: 25px; height: 2px; background: var(--khiva-cyan); transition: 0.3s; }
+        nav a:hover {
+            color: var(--text-primary);
+        }
 
-        section { padding: 6rem 5%; max-width: 1200px; margin: 0 auto; }
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
 
-        /* Hero */
-        .hero { min-height: 85vh; display: flex; flex-direction: column; justify-content: center; }
-        .hero-badge {
-            display: inline-flex; align-items: center; padding: 0.4rem 1rem;
-            background: rgba(255, 42, 42, 0.05); color: var(--red-team);
-            border: 1px solid var(--red-team); font-size: 0.8rem; letter-spacing: 2px;
-            margin-bottom: 2rem; width: fit-content; box-shadow: 0 0 10px var(--red-team-glow);
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-primary);
+            margin-bottom: 2rem;
+            width: fit-content;
         }
-        .hero-badge::before {
-            content: ''; display: inline-block; width: 8px; height: 8px;
-            background: var(--red-team); border-radius: 50%; margin-right: 10px;
-            animation: pulse-dot 1.5s infinite;
-        }
-        @keyframes pulse-dot {
-            0% { opacity: 1; box-shadow: 0 0 0 0 var(--red-team-glow); }
-            70% { opacity: 0.4; box-shadow: 0 0 0 10px rgba(255, 42, 42, 0); }
-            100% { opacity: 1; }
-        }
-        h1 { font-size: clamp(2.5rem, 5vw, 5rem); line-height: 1.1; margin-bottom: 1.5rem; text-transform: uppercase; }
-        .typing-container {
-            display: inline-block; color: var(--khiva-cyan); border-right: 4px solid var(--red-team);
-            padding-right: 8px; text-shadow: 0 0 15px var(--khiva-cyan-glow);
-            animation: blink 1s step-end infinite;
-        }
-        @keyframes blink { 50% { border-color: transparent; } }
-        .hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin-bottom: 3rem; }
 
-        /* Buttons */
-        .btn-group { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-        .btn {
-            display: inline-block; padding: 1rem 2.5rem; background: transparent;
-            color: var(--khiva-cyan); border: 1px solid var(--khiva-cyan);
-            text-decoration: none; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1px; transition: all 0.3s ease; cursor: pointer;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        .status-badge .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-primary);
+            animation: blink 2s infinite;
         }
-        .btn:hover { background: rgba(0, 210, 255, 0.1); box-shadow: inset 0 0 20px var(--khiva-cyan-glow), 0 0 20px var(--khiva-cyan-glow); }
-        .btn-red { border-color: var(--red-team); color: var(--red-team); }
-        .btn-red:hover { background: rgba(255, 42, 42, 0.1); box-shadow: inset 0 0 20px var(--red-team-glow), 0 0 20px var(--red-team-glow); }
 
-        /* General Layout */
-        .about-grid, .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: center; }
-        .section-title { color: var(--text-main); font-size: clamp(1.8rem, 3vw, 2.5rem); margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; text-transform: uppercase; }
-        .section-title::before { content: '0x01 //'; color: var(--red-team); font-size: clamp(1.2rem, 2vw, 1.5rem); }
-        #services .section-title::before { content: '0x02 //'; }
-        #contact .section-title::before { content: '0x03 //'; }
+        @keyframes blink { 50% { opacity: 0.4; } }
 
-        /* Terminal Window */
-        .terminal-window {
-            background: #05070a; border: 1px solid #1f2937; border-radius: 6px; overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 30px rgba(0, 210, 255, 0.05); position: relative;
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            line-height: 1.05;
+            letter-spacing: -1px;
+            margin-bottom: 1.5rem;
+            max-width: 1000px;
+            background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.5) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .terminal-window::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--khiva-cyan), transparent); opacity: 0.5;
-        }
-        .terminal-header { background: #0d1117; padding: 0.75rem 1rem; display: flex; align-items: center; border-bottom: 1px solid #1f2937; }
-        .terminal-title { color: var(--text-muted); font-size: 0.8rem; margin: 0 auto; letter-spacing: 1px; }
-        .dots { display: flex; gap: 6px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .dot:nth-child(1) { background: #ff5f56; }
-        .dot:nth-child(2) { background: #ffbd2e; }
-        .dot:nth-child(3) { background: #27c93f; }
-        .terminal-body { padding: 2rem; font-size: 0.95rem; color: #a7f3d0; min-height: 250px; overflow-x: auto; }
-        .prompt-line { margin-bottom: 0.5rem; }
-        .user-path { color: var(--khiva-cyan); font-weight: 600; }
-        .command-output { color: var(--text-muted); margin-bottom: 1rem; margin-left: 1rem; }
-        .danger-text { color: var(--red-team); font-weight: 600; }
 
-        /* Services */
-        .services { background: linear-gradient(to bottom, var(--surface-color), var(--bg-color)); border-top: 1px solid rgba(255, 42, 42, 0.15); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; }
-        .card {
-            background: rgba(5, 7, 10, 0.6); padding: 2.5rem; border: 1px solid #1f2937;
-            position: relative; transition: all 0.4s ease; backdrop-filter: blur(5px);
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 3rem;
         }
-        .card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: var(--khiva-cyan); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease;
-        }
-        .card:hover { transform: translateY(-5px); border-color: rgba(0, 210, 255, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(0, 210, 255, 0.05); }
-        .card:hover::before { transform: scaleX(1); }
-        .card:hover h3 { color: var(--red-team); }
-        .card h3 { color: var(--khiva-cyan); margin-bottom: 1rem; font-size: 1.4rem; transition: color 0.3s; }
-        .card-num { position: absolute; top: 1rem; right: 1rem; font-size: 2rem; font-weight: 700; color: rgba(255,255,255,0.03); }
 
-        /* Contact Section */
-        .contact-form { display: flex; flex-direction: column; gap: 1.5rem; }
-        .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .input-group label { color: var(--khiva-cyan); font-size: 0.85rem; letter-spacing: 1px; }
-        .input-group label::before { content: '>'; color: var(--red-team); margin-right: 8px; }
-        .input-group input, .input-group textarea {
-            background: rgba(5, 7, 10, 0.8); border: 1px solid #1f2937; border-bottom: 1px solid var(--khiva-cyan);
-            color: var(--text-main); padding: 1rem; font-family: var(--font-mono); font-size: 1rem;
-            outline: none; transition: 0.3s; resize: vertical;
+        /* Bento Grid Section */
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        .input-group input:focus, .input-group textarea:focus {
-            border-color: var(--khiva-cyan); box-shadow: 0 5px 15px rgba(0, 210, 255, 0.1);
+        
+        .section-title::before {
+            content: '';
+            height: 2px;
+            width: 40px;
+            background: var(--accent-primary);
         }
-        .contact-info { display: flex; flex-direction: column; gap: 2rem; justify-content: center; }
-        .info-block h4 { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem; letter-spacing: 2px; text-transform: uppercase; }
-        .info-block p { color: var(--text-main); font-size: 1.1rem; }
-        .info-block a { color: var(--khiva-cyan); text-decoration: none; transition: 0.3s; }
-        .info-block a:hover { color: var(--red-team); text-shadow: 0 0 10px var(--red-team-glow); }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 5rem 5%;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: minmax(300px, auto);
+            gap: 1.5rem;
+        }
+
+        .bento-card {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.4s;
+            backdrop-filter: blur(10px);
+        }
+
+        .bento-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 255, 255, 0.06), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .bento-card:hover::before {
+            opacity: 1;
+        }
+
+        .bento-card.wide {
+            grid-column: span 2;
+        }
+
+        .bento-icon {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .bento-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .bento-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            padding: 4px 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            font-family: monospace;
+        }
+
+        /* Leadership & Connections */
+        .connect-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .link-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-card::after {
+            content: '↗';
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            opacity: 0.3;
+            transition: all 0.3s;
+        }
+
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-primary);
+        }
+
+        .link-card:hover::after {
+            opacity: 1;
+            color: var(--accent-primary);
+            transform: translate(2px, -2px);
+        }
+
+        .link-card h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .link-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .link-card .role {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-secondary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
 
         /* Footer */
-        footer { text-align: center; padding: 3rem 5%; color: var(--text-muted); border-top: 1px solid #1f2937; background: #000; }
-        .footer-logo { font-size: 2rem; margin-bottom: 1rem; color: var(--text-main); letter-spacing: 2px; }
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: var(--bg-surface);
+        }
 
-        /* Responsive Design */
-        @media (max-width: 900px) {
-            .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+        .sys-info span {
+            margin-right: 1.5rem;
+            font-family: monospace;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .bento-card.wide { grid-column: span 2; }
         }
 
         @media (max-width: 768px) {
-            .menu-toggle { display: flex; }
-            nav {
-                position: absolute; top: 100%; left: 0; width: 100%; background: rgba(3, 4, 6, 0.98);
-                border-bottom: 1px solid var(--khiva-cyan); flex-direction: column;
-                padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
-            }
-            nav.active { max-height: 300px; padding: 1.5rem 0; }
-            nav a { margin: 1rem 0; font-size: 1.1rem; }
-            
-            /* Burger Animation */
-            .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-            .menu-toggle.active span:nth-child(2) { opacity: 0; }
-            .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-
-            .btn-group { flex-direction: column; width: 100%; }
-            .btn { width: 100%; text-align: center; }
-            section { padding: 4rem 5%; }
+            .bento-grid { grid-template-columns: 1fr; }
+            .bento-card.wide { grid-column: span 1; }
+            .connect-grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; gap: 1rem; padding: 1rem; }
+            nav a { margin: 0 1rem; }
+            footer { flex-direction: column; gap: 1rem; text-align: center; }
+            .sys-info span { display: block; margin: 0.5rem 0; }
         }
     </style>
 </head>
 <body>
-    <div class="khorezm-pattern"></div>
+
+    <div class="ambient-glow"></div>
+    <div class="grid-overlay"></div>
 
     <header>
-        <a href="#" class="logo">OSEC<span>.UZ</span></a>
-        <div class="menu-toggle" id="mobile-menu">
-            <span></span><span></span><span></span>
-        </div>
-        <nav id="nav-links">
-            <a href="#about">Philosophy</a>
-            <a href="#services">Capabilities</a>
-            <a href="#contact">Comms</a>
+        <a href="#" class="brand">ORQOYIN</a>
+        <nav>
+            <a href="#infrastructure">Infrastructure</a>
+            <a href="#leadership">Network</a>
         </nav>
     </header>
 
     <section class="hero">
-        <div class="hero-badge">ROOT ACCESS GRANTED</div>
-        <h1>We Don't Defend.<br><span class="typing-container" id="typewriter"></span></h1>
-        <p>A proud division of the Orqoyin family. Operating out of Urganch, we engineer specialized offensive operations, advanced red teaming, and custom exploitation to forge unbreakable defenses.</p>
-        <div class="btn-group">
-            <a href="#services" class="btn">Explore Vectors</a>
-            <a href="#contact" class="btn btn-red">Initiate Handshake</a>
+        <div class="status-badge">
+            <div class="dot"></div>
+            SYSTEM STATUS: ONLINE // 2027.1
         </div>
+        <h1>Architecting digital resilience. Accelerating human potential.</h1>
+        <p>Merging deep linguistic intelligence with bleeding-edge full-stack architecture and zero-trust protocols at the edge of tomorrow.</p>
     </section>
 
-    <section id="about" class="about-grid">
-        <div>
-            <h2 class="section-title">The 'O' Directive</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">OSEC represents the dual nature of our existence: <strong>Orqoyin</strong> and <strong>Offensive</strong>. Rooted deeply in the ancient resilience of Khorezm, we apply relentless rigor to the chaos of modern digital warfare.</p>
-            <p style="color: var(--text-muted);">We do not rely on automated scanners. We build custom infrastructure, compile our own tools, and simulate highly sophisticated, targeted attacks to expose critical logic flaws before adversaries do.</p>
-        </div>
-        <div class="terminal-window">
-            <div class="terminal-header">
-                <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-                <div class="terminal-title">root@osec:~# /bin/bash</div>
-            </div>
-            <div class="terminal-body" id="term-body"></div>
-        </div>
-    </section>
-
-    <div class="services">
-        <section id="services">
-            <h2 class="section-title">Attack Vectors</h2>
-            <div class="grid">
-                <div class="card">
-                    <div class="card-num">01</div>
-                    <h3>Advanced Red Teaming</h3>
-                    <p class="text-muted">Full-spectrum, objective-based attack simulations bypassing standard security controls to test your organization's physical, human, and cyber resilience.</p>
-                </div>
-                <div class="card">
-                    <div class="card-num">02</div>
-                    <h3>RAG & AI Exploitation</h3>
-                    <p class="text-muted">Specialized penetration testing targeting AI models and Retrieval-Augmented Generation pipelines. We weaponize prompts to prevent real-world data exfiltration.</p>
-                </div>
-                <div class="card">
-                    <div class="card-num">03</div>
-                    <h3>Supply Chain Compromise</h3>
-                    <p class="text-muted">Emulating APT behavior by auditing deep dependencies, custom OS configurations, and identifying lateral movement vectors within internal environments.</p>
-                </div>
-                <div class="card">
-                    <div class="card-num">04</div>
-                    <h3>SOC Forensics Emulation</h3>
-                    <p class="text-muted">We construct bespoke malware and controlled forensic artifacts to stress-test your Security Operations Center's detection and incident response capabilities.</p>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <section id="contact">
-        <h2 class="section-title">Secure Comms</h2>
-        <div class="contact-grid">
-            <div class="contact-info">
-                <div class="info-block">
-                    <h4>Direct Protocol</h4>
-                    <p><a href="mailto:offseckh@icloud.com">offseckh@icloud.com</a></p>
-                </div>
-                <div class="info-block">
-                    <h4>Encrypted Channel</h4>
-                    <p><a href="https://t.me/osecuz" target="_blank">t.me/osecuz</a></p>
-                </div>
-                <div class="info-block">
-                    <h4>PGP Fingerprint</h4>
-                    <p style="font-size: 0.9rem; color: var(--red-team); word-break: break-all;">A1B2 C3D4 E5F6 7890 1234  5678 90AB CDEF 1234 5678</p>
-                </div>
-                <div class="info-block">
-                    <h4>Physical Origin</h4>
-                    <p>Urganch, Khorezm Region<br><span style="color: var(--text-muted); font-size: 0.85rem;">Republic of Uzbekistan</span></p>
-                </div>
-            </div>
+    <section id="infrastructure" class="container">
+        <h2 class="section-title">Core Verticals</h2>
+        <div class="bento-grid">
             
-            <form class="contact-form" id="cyber-form" onsubmit="event.preventDefault(); submitForm();">
-                <div class="input-group">
-                    <label>TARGET ALIAS</label>
-                    <input type="text" required placeholder="Enter handle or entity name...">
+            <div class="bento-card wide">
+                <span class="bento-icon">⚡</span>
+                <h3>Systems Architecture</h3>
+                <p>Engineering high-concurrency applications, robust local AI deployments, and custom hybrid operating systems. Building the foundation for digital sovereignty.</p>
+                <div class="tech-stack">
+                    <span class="tech-badge">Rust</span>
+                    <span class="tech-badge">Vue 3</span>
+                    <span class="tech-badge">Nuxt.js</span>
+                    <span class="tech-badge">Tauri</span>
+                    <span class="tech-badge">Django</span>
                 </div>
-                <div class="input-group">
-                    <label>RETURN VECTOR</label>
-                    <input type="text" required placeholder="Email or secure messenger ID...">
+            </div>
+
+            <div class="bento-card">
+                <span class="bento-icon">🛡️</span>
+                <h3>Sec-Ops & Forensics</h3>
+                <p>Advanced threat modeling, comprehensive log analysis, and live simulated network testing environments. Zero-trust by design.</p>
+            </div>
+
+            <div class="bento-card wide">
+                <span class="bento-icon">🌍</span>
+                <h3>Linguistic Intelligence</h3>
+                <p>Deep morphological analysis, localized language processing models, and modern speech variations engineered for native AI integrations.</p>
+            </div>
+
+            <div class="bento-card" style="background: linear-gradient(135deg, rgba(0,229,255,0.1) 0%, rgba(112,0,255,0.05) 100%);">
+                <span class="bento-icon">📍</span>
+                <h3>Edge Deployment</h3>
+                <p>Operating out of Urgench, UZ. Bringing enterprise-grade infrastructure to emerging technological frontiers.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="leadership" class="container" style="padding-top: 0;">
+        <h2 class="section-title">Leadership & Connectivity</h2>
+        <div class="connect-grid">
+            
+            <a href="http://orqoyin.uz" target="_blank" class="link-card" style="border-color: rgba(0, 229, 255, 0.3);">
+                <div>
+                    <div class="role">Parent Entity // HQ</div>
+                    <h4>ORQOYIN.UZ</h4>
+                    <p>The central nexus for elite training, hardware-software integration, and technological empowerment.</p>
                 </div>
-                <div class="input-group">
-                    <label>PAYLOAD</label>
-                    <textarea rows="5" required placeholder="Detail the engagement scope..."></textarea>
+            </a>
+
+            <a href="https://t.me/hidoyatiyy" target="_blank" class="link-card">
+                <div>
+                    <div class="role">Founder & Chief Architect</div>
+                    <h4>Hidoyatxon Atabaev</h4>
+                    <p>Direct Telegram Comm-Link for visionary collaboration, architectural discourse, and inquiries.</p>
                 </div>
-                <button type="submit" class="btn btn-red" id="submit-btn" style="width: 100%; border: none; background: rgba(255, 42, 42, 0.1);">Encrypt & Transmit</button>
-            </form>
+            </a>
+
+            <a href="https://x.com/abulghazy" target="_blank" class="link-card" style="grid-column: 1 / -1; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                <div>
+                    <div class="role">Global Feed</div>
+                    <h4>@abulghazy on X</h4>
+                    <p style="max-width: 600px;">Public broadcasts, structural updates, and industry insights directly from the architect.</p>
+                </div>
+            </a>
+
         </div>
     </section>
 
     <footer>
-        <h2 class="footer-logo">OSEC<span>.UZ</span></h2>
-        <p style="color: var(--khiva-cyan);">>> Offensive Security // Orqoyin Family</p>
-        <p style="margin-top: 1.5rem; font-size: 0.8rem; opacity: 0.4;">[CONNECTION TERMINATED] &copy; 2026 OSEC.</p>
+        <div class="sys-info">
+            <span>NODE: URGENCH, UZ</span>
+            <span>ENV: PRODUCTION</span>
+            <span>ENCRYPTION: ACTIVE</span>
+        </div>
+        <div>
+            &copy; 2027 ORQOYIN. All rights reserved.
+        </div>
     </footer>
 
     <script>
-        // Mobile Menu Toggle
-        const menuBtn = document.getElementById('mobile-menu');
-        const navLinks = document.getElementById('nav-links');
-        
-        menuBtn.addEventListener('click', () => {
-            menuBtn.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        });
-
-        // Close menu when a link is clicked
-        document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', () => {
-                menuBtn.classList.remove('active');
-                navLinks.classList.remove('active');
+        // Interactive Bento Hover Effect (2027 feel)
+        document.querySelectorAll('.bento-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
             });
-        });
-
-        // Hero Typewriter Effect
-        const heroTexts = ["We Attack.", "We Exploit.", "We Bypass.", "We Compromise."];
-        let hCount = 0, hIndex = 0, hIsDeleting = false;
-        
-        function heroTypeWriter() {
-            const current = heroTexts[hCount];
-            let typeSpeed = hIsDeleting ? 40 : 100;
-            
-            if (hIsDeleting) {
-                document.getElementById("typewriter").textContent = current.substring(0, hIndex - 1);
-                hIndex--;
-            } else {
-                document.getElementById("typewriter").textContent = current.substring(0, hIndex + 1);
-                hIndex++;
-            }
-            
-            if (!hIsDeleting && hIndex === current.length) {
-                typeSpeed = 2000; hIsDeleting = true;
-            } else if (hIsDeleting && hIndex === 0) {
-                hIsDeleting = false; hCount = (hCount + 1) % heroTexts.length; typeSpeed = 400;
-            }
-            setTimeout(heroTypeWriter, typeSpeed);
-        }
-
-        // Terminal Auto-Typing Logic
-        const termLines = [
-            { text: "whoami", type: "cmd" },
-            { text: "orqoyin_red_team", type: "out" },
-            { text: "cat /etc/location", type: "cmd" },
-            { text: "Khorezm.Urganch // Target Acquired", type: "out" },
-            { text: "./rust_exploit --target rag_pipeline --verbose", type: "cmd" },
-            { text: "[*] Initializing memory corruption payload...", type: "out" },
-            { text: "[+] Sandbox bypassed successfully.", type: "out" },
-            { text: "[!] ROOT SHELL SPAWNED", type: "danger" }
-        ];
-
-        let tLine = 0, tChar = 0, termHasRun = false;
-        const termContainer = document.getElementById('term-body');
-
-        function typeTerminal() {
-            if (tLine >= termLines.length) return;
-            const lineData = termLines[tLine];
-            
-            if (lineData.type === "cmd") {
-                if (tChar === 0) {
-                    const div = document.createElement('div');
-                    div.className = 'prompt-line';
-                    div.innerHTML = `<span class="user-path">root@osec:~$</span> <span id="cmd-${tLine}"></span><span class="typing-cursor">_</span>`;
-                    termContainer.appendChild(div);
-                }
-                
-                document.getElementById(`cmd-${tLine}`).textContent += lineData.text.charAt(tChar);
-                tChar++;
-
-                if (tChar < lineData.text.length) {
-                    setTimeout(typeTerminal, Math.random() * 50 + 30);
-                } else {
-                    document.querySelector('.typing-cursor').remove();
-                    tChar = 0; tLine++;
-                    setTimeout(typeTerminal, 400);
-                }
-            } else {
-                const div = document.createElement('div');
-                div.className = lineData.type === "danger" ? "command-output danger-text" : "command-output";
-                div.textContent = lineData.text;
-                termContainer.appendChild(div);
-                tLine++;
-                setTimeout(typeTerminal, 200);
-            }
-        }
-
-        // Intersection Observer for Terminal
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !termHasRun) {
-                    termHasRun = true;
-                    setTimeout(typeTerminal, 500);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        // Form Submit Simulation
-        function submitForm() {
-            const btn = document.getElementById('submit-btn');
-            btn.textContent = "[ ENCRYPTING... ]";
-            btn.style.color = "var(--text-main)";
-            
-            setTimeout(() => {
-                btn.textContent = "PAYLOAD DELIVERED";
-                btn.style.backgroundColor = "rgba(0, 210, 255, 0.2)";
-                btn.style.color = "var(--khiva-cyan)";
-                btn.style.borderColor = "var(--khiva-cyan)";
-                document.getElementById('cyber-form').reset();
-                
-                setTimeout(() => {
-                    btn.textContent = "Encrypt & Transmit";
-                    btn.style = "width: 100%; border: none; background: rgba(255, 42, 42, 0.1);";
-                }, 3000);
-            }, 1500);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(heroTypeWriter, 800);
-            observer.observe(document.querySelector('.terminal-window'));
         });
     </script>
 </body>
