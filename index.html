@@ -10,7 +10,6 @@
         :root {
             --bg-base: #020305;
             --bg-surface: #07090f;
-            --bg-surface-glow: rgba(255, 42, 42, 0.03);
             --red-team: #ff2a2a;
             --red-team-glow: rgba(255, 42, 42, 0.35);
             --khiva-cyan: #00f0ff;
@@ -207,7 +206,6 @@
             font-size: 0.85rem;
             transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             cursor: pointer;
-            position: relative;
         }
 
         .btn:hover {
@@ -538,7 +536,7 @@
         }
 
         @media (max-width: 768px) {
-            nav { display: none; } /* Simplified mobile for robustness */
+            nav { display: none; }
             .btn-group { flex-direction: column; width: 100%; }
             .btn { width: 100%; text-align: center; }
             section { padding: 4rem 5%; }
@@ -565,7 +563,7 @@
     <section class="hero">
         <div class="hero-badge">OFFENSIVE SECURITY OPERATIONS // URGENCH, UZ</div>
         <h1>We Don't Defend.<br><span class="typing-target" id="typewriter"></span></h1>
-        <p>A specialized red team division of the Orqoyin ecosystem. We engineer custom exploitation vectors, weaponize payloads, and shatter perimeter illusions before real adversaries do.</p>
+        <p>A specialized offensive security division of the Orqoyin ecosystem, founded and directed by Hidoyatxon Atabaev. Operating out of Urgench, we engineer custom exploitation vectors, weaponize payloads, and shatter perimeter illusions before real adversaries do.</p>
         <div class="btn-group">
             <a href="#vectors" class="btn btn-red">Explore Vectors</a>
             <a href="#comms" class="btn">Initiate Handshake</a>
@@ -576,8 +574,8 @@
         <div class="about-grid">
             <div class="about-text">
                 <h2 class="section-title" style="margin-bottom: 1.5rem;">The 'O' Directive</h2>
-                <p>OSEC.uz represents unyielding offensive rigor. Rooted in Khorezmian resilience and built for modern digital warfare, we bypass automated scanners and generic checklists.</p>
-                <p>We craft custom tooling, emulate targeted APT behavior, and dismantle multi-layered architectures with surgical precision.</p>
+                <p>OSEC.uz represents unyielding offensive rigor under the leadership of <strong>Hidoyatxon Atabaev</strong> (<a href="https://t.me/hidoyatiyy" target="_blank" style="color: var(--khiva-cyan); text-decoration: none;">@hidoyatiyy</a> / <a href="https://x.com/abulghazy" target="_blank" style="color: var(--khiva-cyan); text-decoration: none;">@abulghazy</a>). Rooted in Khorezmian resilience and built for modern digital warfare, we bypass automated scanners and generic checklists.</p>
+                <p>Operating as an elite arm tied directly to <a href="http://orqoyin.uz" target="_blank" style="color: var(--khiva-cyan); text-decoration: none;">orqoyin.uz</a>, we craft custom tooling, emulate targeted APT behavior, and dismantle multi-layered architectures with surgical precision.</p>
             </div>
             <div class="terminal-window">
                 <div class="terminal-header">
@@ -622,20 +620,20 @@
         <div class="contact-grid">
             <div class="contact-info">
                 <div class="info-block">
-                    <h4>Direct Protocol</h4>
-                    <p><a href="mailto:offseckh@icloud.com">offseckh@icloud.com</a></p>
+                    <h4>Founder & Chief Architect</h4>
+                    <p><a href="https://t.me/hidoyatiyy" target="_blank">Hidoyatxon Atabaev (@hidoyatiyy)</a></p>
+                </div>
+                <div class="info-block">
+                    <h4>Global Feed / X</h4>
+                    <p><a href="https://x.com/abulghazy" target="_blank">@abulghazy</a></p>
+                </div>
+                <div class="info-block">
+                    <h4>Parent Corporation</h4>
+                    <p><a href="http://orqoyin.uz" target="_blank">orqoyin.uz</a> // Urgench, Khorezm, Uzbekistan</p>
                 </div>
                 <div class="info-block">
                     <h4>Encrypted Channel</h4>
                     <p><a href="https://t.me/osecuz" target="_blank">t.me/osecuz</a></p>
-                </div>
-                <div class="info-block">
-                    <h4>Parent Corporation</h4>
-                    <p><a href="http://orqoyin.uz" target="_blank">orqoyin.uz</a> // Urgench, Uz</p>
-                </div>
-                <div class="info-block">
-                    <h4>PGP Key Fingerprint</h4>
-                    <p style="font-size: 0.8rem; color: var(--red-team); word-break: break-all;">A1B2 C3D4 E5F6 7890 1234 5678 90AB CDEF</p>
                 </div>
             </div>
             
@@ -658,7 +656,7 @@
     </section>
 
     <div class="ecosystem-bar">
-        <div class="eco-brand">OSEC.uz // PART OF THE ORQOYIN FAMILY</div>
+        <div class="eco-brand">OSEC.uz // DIRECTED BY HIDOYATXON ATABAEV</div>
         <div class="eco-links">
             <a href="http://orqoyin.uz" target="_blank">orqoyin.uz</a>
             <a href="https://t.me/hidoyatiyy" target="_blank">Telegram: @hidoyatiyy</a>
@@ -671,7 +669,6 @@
     </footer>
 
     <script>
-        // Typewriter Effect
         const heroTexts = ["We Attack.", "We Exploit.", "We Bypass.", "We Compromise."];
         let hCount = 0, hIndex = 0, hIsDeleting = false;
         
@@ -695,12 +692,11 @@
             setTimeout(heroTypeWriter, typeSpeed);
         }
 
-        // Terminal Automated Sequence
         const termLines = [
             { text: "whoami", type: "cmd" },
-            { text: "osec_red_team_operator", type: "out" },
+            { text: "hidoyatxon_atabaev // osec_lead", type: "out" },
             { text: "cat /etc/location", type: "cmd" },
-            { text: "Urgench.Khorezm // Perimeter Breach Active", type: "out" },
+            { text: "Urgench.Khorezm // Orqoyin Ecosystem", type: "out" },
             { text: "./custom_payload --target enterprise_net --stealth", type: "cmd" },
             { text: "[*] Injecting shellcode into memory sectors...", type: "out" },
             { text: "[+] Egress tunnels established successfully.", type: "out" },
