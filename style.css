@@ -1533,3 +1533,62 @@ footer {
     align-items: flex-start;
   }
 }
+
+/* ARTICLE IMAGES & MEDIA */
+.article-body img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin: 25px 0 10px;
+  display: block;
+  background: #0d0e0d;
+}
+
+.img-figure {
+  margin: 30px 0;
+}
+
+.img-caption {
+  display: block;
+  font: 500 0.62rem var(--mono);
+  color: #777;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* IMAGE UPLOAD WIDGET IN ADMIN */
+.image-upload-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 18px;
+  background: #141514;
+  border-bottom: 1px solid var(--line);
+  font: 500 0.62rem var(--mono);
+  color: #888;
+}
+
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #202220;
+  border: 1px solid var(--line-light);
+  color: #eee;
+  padding: 5px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  font: 500 0.62rem var(--mono);
+  transition: 0.2s;
+}
+
+.upload-btn:hover {
+  background: #2a2c2a;
+  border-color: #777;
+}
+
+.upload-status {
+  font-size: 0.6rem;
+  color: var(--muted);
+}

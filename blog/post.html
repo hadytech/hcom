@@ -87,7 +87,7 @@
     
     let html = md;
     
-    // Escape raw HTML entities to prevent XSS
+    // Escape raw HTML entities to prevent XSS (except for safe markdown constructs)
     html = html
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -100,6 +100,18 @@
         <div class="code-header"><span>${cleanLang.toUpperCase()}</span><span>SOURCE</span></div>
         <pre><code>${code.trim()}</code></pre>
       </div>`;
+    });
+
+    // Images: ![alt text](url)
+    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, url) {
+      const cleanUrl = url.trim();
+      const cleanAlt = alt.trim() || 'Research Image';
+      return `<figure class="img-figure"><img src="${cleanUrl}" alt="${cleanAlt}"><figcaption class="img-caption">${cleanAlt}</figcaption></figure>`;
+    });
+
+    // Links: [link text](url)
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, function(match, text, url) {
+      return `<a href="${url.trim()}" target="_blank" rel="noopener" style="color:var(--red); text-decoration:underline;">${text}</a>`;
     });
 
     // Blockquotes / Advisory callouts
@@ -121,14 +133,14 @@
 
     // Unordered lists
     html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
-    html = html.replace(/(<li>.*<\/li>(\n|.)*?)(?=(<h|<div|<p|$))/g, '<ul>$1</ul>');
+    html = html.replace(/(<li>.*<\/li>(\n|.)*?)(?=(<h|<div|<p|<figure|$))/g, '<ul>$1</ul>');
 
     // Paragraphs
     const paragraphs = html.split(/\n\n+/);
     html = paragraphs.map(p => {
       p = p.trim();
       if (!p) return '';
-      if (p.startsWith('<h') || p.startsWith('<div') || p.startsWith('<ul') || p.startsWith('<pre')) {
+      if (p.startsWith('<h') || p.startsWith('<div') || p.startsWith('<ul') || p.startsWith('<pre') || p.startsWith('<figure')) {
         return p;
       }
       return `<p>${p}</p>`;
