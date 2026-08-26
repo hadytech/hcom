@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>Admin Studio — OSEC.uz Authoring & Publishing</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<header>
+<div class="wrap nav">
+  <a href="../index.html" class="logo">OSEC<span>.uz</span></a>
+  <div class="nav-center">PUBLISHING STUDIO / AUTHOR ONLY</div>
+  <div class="nav-right">
+    <a href="../blog/index.html">View Archive</a>
+    <a href="../index.html">Live Site →</a>
+  </div>
+</div>
+</header>
+
+<main>
+<div class="wrap">
+  <!-- Auth Screen (when not authenticated) -->
+  <div id="authScreen" class="admin-login-card">
+    <div class="label"><span class="red">SECURITY ACCESS</span> / AUTHORIZATION</div>
+    <h2 style="margin-top:15px">OSEC Author Studio</h2>
+    <p>Only authorized researchers can publish or modify technical articles on OSEC.uz.</p>
+
+    <div class="form-group">
+      <label>GitHub Personal Access Token (or Passphrase)</label>
+      <input type="password" id="authInput" class="form-control mono" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx or master password" autocomplete="current-password">
+      <small style="display:block; margin-top:6px; font-size:0.68rem; color:#666; font-family:var(--mono);">
+        Token is stored only in local browser session memory for direct API publishing.
+      </small>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:25px;">
+      <button class="btn btn-red" id="loginBtn" style="flex:1;">Authenticate →</button>
+      <button class="btn btn-dark" id="guestDemoBtn" style="flex:1;">Local Draft Mode</button>
+    </div>
+  </div>
+
+  <!-- Studio Screen (when authenticated) -->
+  <div id="studioScreen" style="display:none;" class="admin-layout">
+    <div class="admin-header-flex">
+      <div>
+        <div class="label"><span class="red">AUTHORING PORTAL</span> / REPO: hadytech/hcom</div>
+        <h1 style="font-size:2.4rem; font-weight:500; letter-spacing:-0.04em; margin-top:10px;">Article Publisher</h1>
+      </div>
+      <div class="admin-status">
+        <span class="status-indicator"></span>
+        <span id="authStatusText">AUTHENTICATED (OWNER)</span>
+        <button id="logoutBtn" class="filter-btn" style="padding:4px 10px; margin-left:12px;">Lock</button>
+      </div>
+    </div>
+
+    <!-- Post Metadata Controls -->
+    <div style="background:#0d0e0d; border:1px solid var(--line); padding:28px; margin-top:35px; border-radius:3px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--line);">
+        <span class="label">Article Metadata</span>
+        <div>
+          <button id="newPostBtn" class="filter-btn active">+ New Post</button>
+          <select id="loadExistingPost" class="form-control mono" style="display:inline-block; width:auto; padding:6px 12px; height:auto; margin-left:8px;">
+            <option value="">Load existing article...</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="postTitleInput" class="form-control" placeholder="e.g., Novel Kernel Driver Exploitation via Arbitrary Write">
+        </div>
+        <div class="form-group">
+          <label>Slug / ID</label>
+          <input type="text" id="postSlugInput" class="form-control mono" placeholder="e.g., kernel-driver-exploitation">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="postCategoryInput" class="form-control mono">
+            <option value="exploit">EXPLOIT DEV</option>
+            <option value="redteam">RED TEAM</option>
+            <option value="advisory">ADVISORY</option>
+            <option value="cloud">CLOUD SEC</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Severity Level</label>
+          <select id="postSeverityInput" class="form-control mono">
+            <option value="CRITICAL">CRITICAL</option>
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="INFO">INFORMATIONAL</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tactic / MITRE Reference</label>
+          <input type="text" id="postTacticInput" class="form-control mono" placeholder="e.g., Defense Evasion (T1055)">
+        </div>
+        <div class="form-group">
+          <label>Estimated Read Time</label>
+          <input type="text" id="postReadTimeInput" class="form-control mono" placeholder="e.g., 8 MIN READ">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Executive Summary / Excerpt</label>
+        <textarea id="postSummaryInput" class="form-control" rows="2" placeholder="Brief technical summary visible on landing page & archive..."></textarea>
+      </div>
+    </div>
+
+    <!-- Live Markdown Editor & Split Preview -->
+    <div class="editor-split">
+      <div class="editor-pane">
+        <div class="pane-header">
+          <span>MARKDOWN BODY</span>
+          <span>GITHUB FLAVORED</span>
+        </div>
+        <textarea id="markdownInput" class="editor-textarea" placeholder="Write full technical research in Markdown...
+
+## 1. Vulnerability Overview
+Describe the target architecture and the weakness...
+
+```c
+// Sample code snippet
+void exploit() { ... }
+```
+
+> **Advisory Box**
+> Key offensive finding or threat telemetry..."></textarea>
+      </div>
+
+      <div class="preview-pane">
+        <div class="pane-header">
+          <span>LIVE PREVIEW</span>
+          <span>RENDERED TELEMETRY</span>
+        </div>
+        <div class="preview-content article-body" id="previewContainer">
+          <p style="color:#666; font-style:italic;">Type on the left to see live article rendering...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="admin-actions-bar">
+      <div style="font:500 0.65rem var(--mono); color:#888;" id="publishLog">
+        READY TO PUBLISH
+      </div>
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-dark" id="exportJsonBtn">Download JSON Bundle</button>
+        <button class="btn btn-red" id="publishGithubBtn">🚀 Publish Live to hadytech/hcom</button>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+  let authToken = sessionStorage.getItem('osec_admin_token') || '';
+  let postsIndex = [];
+
+  // Helper markdown parser
+  function renderMarkdown(md) {
+    if (!md) return '';
+    let html = md.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    html = html.replace(/```([a-zA-Z0-9_\-\.\s]*)\n([\s\S]*?)```/g, (match, lang, code) => `
+      <div class="code-block">
+        <div class="code-header"><span>${(lang || 'SOURCE').toUpperCase().trim()}</span><span>CODE</span></div>
+        <pre><code>${code.trim()}</code></pre>
+      </div>
+    `);
+    html = html.replace(/^&gt;\s?(.*)$/gm, '<div class="advisory-box"><p>$1</p></div>');
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>(\n|.)*?)(?=(<h|<div|<p|$))/g, '<ul>$1</ul>');
+    return html.split(/\n\n+/).map(p => {
+      p = p.trim();
+      if (!p) return '';
+      if (p.startsWith('<h') || p.startsWith('<div') || p.startsWith('<ul') || p.startsWith('<pre')) return p;
+      return `<p>${p}</p>`;
+    }).join('\n');
+  }
+
+  function initApp() {
+    if (authToken) {
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('studioScreen').style.display = 'block';
+      loadExistingIndex();
+    } else {
+      document.getElementById('authScreen').style.display = 'block';
+      document.getElementById('studioScreen').style.display = 'none';
+    }
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    const val = document.getElementById('authInput').value.trim();
+    if (!val) return alert('Please enter token or password');
+    authToken = val;
+    sessionStorage.setItem('osec_admin_token', val);
+    initApp();
+  });
+
+  document.getElementById('guestDemoBtn').addEventListener('click', () => {
+    authToken = 'local-draft-mode';
+    sessionStorage.setItem('osec_admin_token', authToken);
+    initApp();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    sessionStorage.removeItem('osec_admin_token');
+    authToken = '';
+    initApp();
+  });
+
+  // Slug generator
+  document.getElementById('postTitleInput').addEventListener('input', (e) => {
+    const slugInput = document.getElementById('postSlugInput');
+    if (!slugInput.dataset.manual) {
+      slugInput.value = e.target.value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+    }
+  });
+
+  document.getElementById('postSlugInput').addEventListener('input', () => {
+    document.getElementById('postSlugInput').dataset.manual = 'true';
+  });
+
+  // Live preview
+  document.getElementById('markdownInput').addEventListener('input', (e) => {
+    document.getElementById('previewContainer').innerHTML = renderMarkdown(e.target.value);
+  });
+
+  function loadExistingIndex() {
+    fetch('../posts.json?t=' + Date.now())
+      .then(res => res.json())
+      .then(data => {
+        postsIndex = data;
+        const select = document.getElementById('loadExistingPost');
+        select.innerHTML = '<option value="">Load existing article...</option>' + 
+          data.map(p => `<option value="${p.id}">${p.title}</option>`).join('');
+      })
+      .catch(() => {});
+  }
+
+  document.getElementById('loadExistingPost').addEventListener('change', (e) => {
+    const id = e.target.value;
+    if (!id) return;
+    fetch(`../posts/${encodeURIComponent(id)}.json?t=` + Date.now())
+      .then(res => res.json())
+      .then(post => {
+        document.getElementById('postTitleInput').value = post.title || '';
+        document.getElementById('postSlugInput').value = post.id || '';
+        document.getElementById('postCategoryInput').value = post.category || 'exploit';
+        document.getElementById('postSeverityInput').value = post.severity || 'HIGH';
+        document.getElementById('postTacticInput').value = post.tactic || '';
+        document.getElementById('postReadTimeInput').value = post.readTime || '5 MIN READ';
+        document.getElementById('postSummaryInput').value = post.summary || '';
+        document.getElementById('markdownInput').value = post.content || '';
+        document.getElementById('previewContainer').innerHTML = renderMarkdown(post.content || '');
+      });
+  });
+
+  document.getElementById('newPostBtn').addEventListener('click', () => {
+    document.getElementById('postTitleInput').value = '';
+    document.getElementById('postSlugInput').value = '';
+    document.getElementById('postSlugInput').dataset.manual = '';
+    document.getElementById('postSummaryInput').value = '';
+    document.getElementById('markdownInput').value = '';
+    document.getElementById('previewContainer').innerHTML = '';
+  });
+
+  // Publish to GitHub via REST API
+  document.getElementById('publishGithubBtn').addEventListener('click', async () => {
+    const logEl = document.getElementById('publishLog');
+    const title = document.getElementById('postTitleInput').value.trim();
+    const slug = document.getElementById('postSlugInput').value.trim();
+    const category = document.getElementById('postCategoryInput').value;
+    const severity = document.getElementById('postSeverityInput').value;
+    const tactic = document.getElementById('postTacticInput').value.trim();
+    const readTime = document.getElementById('postReadTimeInput').value.trim() || '5 MIN READ';
+    const summary = document.getElementById('postSummaryInput').value.trim();
+    const content = document.getElementById('markdownInput').value.trim();
+
+    if (!title || !slug || !content) {
+      alert('Please fill Title, Slug, and Markdown content.');
+      return;
+    }
+
+    const categoryNames = {
+      exploit: 'EXPLOIT DEV',
+      redteam: 'RED TEAM',
+      advisory: 'ADVISORY',
+      cloud: 'CLOUD SEC'
+    };
+
+    const postData = {
+      id: slug,
+      title,
+      date: new Date().toISOString().split('T')[0],
+      category,
+      categoryName: categoryNames[category] || 'RESEARCH',
+      readTime,
+      author: 'OSEC RESEARCH TEAM',
+      tactic,
+      technique: tactic,
+      severity,
+      summary,
+      content
+    };
+
+    // Update index
+    const existingIndex = postsIndex.findIndex(p => p.id === slug);
+    const indexEntry = {
+      id: slug,
+      title,
+      date: postData.date,
+      category,
+      categoryName: postData.categoryName,
+      readTime,
+      summary,
+      author: postData.author,
+      tactic,
+      severity,
+      featured: true
+    };
+
+    let updatedIndex = [...postsIndex];
+    if (existingIndex >= 0) {
+      updatedIndex[existingIndex] = indexEntry;
+    } else {
+      updatedIndex.unshift(indexEntry);
+    }
+
+    if (!authToken.startsWith('ghp_') && !authToken.startsWith('github_pat_')) {
+      logEl.innerText = 'LOCAL MODE: Token is not a GitHub PAT. Downloading files locally instead...';
+      downloadBundle(slug, postData, updatedIndex);
+      return;
+    }
+
+    logEl.innerText = 'COMMITTING TO GITHUB REPOSITORY (hadytech/hcom)...';
+
+    try {
+      // 1. Commit post JSON
+      await commitGithubFile(`posts/${slug}.json`, JSON.stringify(postData, null, 2), `Add research post: ${title}`);
+      // 2. Commit posts.json
+      await commitGithubFile('posts.json', JSON.stringify(updatedIndex, null, 2), `Update research index for: ${title}`);
+
+      logEl.innerHTML = '<span style="color:#22c55e">✓ PUBLISHED TO GITHUB! DEPLOYING VIA GITHUB PAGES.</span>';
+      postsIndex = updatedIndex;
+      alert(`Post "${title}" successfully published to hadytech/hcom!`);
+    } catch (err) {
+      logEl.innerHTML = `<span style="color:var(--red)">ERROR: ${err.message}</span>`;
+      console.error(err);
+      alert('GitHub API Error: ' + err.message + '\nDownloading files locally instead.');
+      downloadBundle(slug, postData, updatedIndex);
+    }
+  });
+
+  async function commitGithubFile(path, content, message) {
+    const owner = 'hadytech';
+    const repo = 'hcom';
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+    // Get current SHA if file exists
+    let sha = null;
+    try {
+      const getRes = await fetch(apiUrl, {
+        headers: { 'Authorization': `token ${authToken}` }
+      });
+      if (getRes.ok) {
+        const fileInfo = await getRes.json();
+        sha = fileInfo.sha;
+      }
+    } catch(e) {}
+
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${authToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message,
+        content: btoa(unescape(encodeURIComponent(content))),
+        sha: sha || undefined
+      })
+    });
+
+    if (!putRes.ok) {
+      const err = await putRes.json();
+      throw new Error(err.message || 'Failed to commit file');
+    }
+  }
+
+  function downloadBundle(slug, postData, updatedIndex) {
+    const download = (filename, text) => {
+      const el = document.createElement('a');
+      el.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(text));
+      el.setAttribute('download', filename);
+      el.click();
+    };
+    download(`${slug}.json`, JSON.stringify(postData, null, 2));
+    download('posts.json', JSON.stringify(updatedIndex, null, 2));
+  }
+
+  document.getElementById('exportJsonBtn').addEventListener('click', () => {
+    const slug = document.getElementById('postSlugInput').value.trim() || 'post';
+    const postData = {
+      id: slug,
+      title: document.getElementById('postTitleInput').value.trim(),
+      date: new Date().toISOString().split('T')[0],
+      category: document.getElementById('postCategoryInput').value,
+      summary: document.getElementById('postSummaryInput').value.trim(),
+      content: document.getElementById('markdownInput').value.trim()
+    };
+    downloadBundle(slug, postData, postsIndex);
+  });
+
+  initApp();
+</script>
+</body>
+</html>

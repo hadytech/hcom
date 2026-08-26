@@ -1,0 +1,44 @@
+[
+  {
+    "id": "bypassing-edr-syscalls",
+    "title": "Bypassing Modern EDR Hooks via Direct Syscalls & Synthetic Stack Frames",
+    "date": "2026-08-20",
+    "category": "exploit",
+    "categoryName": "EXPLOIT DEV",
+    "readTime": "7 MIN READ",
+    "summary": "Analyzing user-mode API unhooking, dynamic SSN resolution via HalosGate, and synthetic stack spoofing to defeat call-stack telemetry in modern Windows endpoints.",
+    "author": "OSEC RESEARCH TEAM",
+    "tactic": "Defense Evasion",
+    "technique": "T1055, T1106",
+    "severity": "CRITICAL",
+    "featured": true
+  },
+  {
+    "id": "active-directory-attack-paths",
+    "title": "Lateral Movement in Hybrid Active Directory & Entra ID Environments",
+    "date": "2026-08-11",
+    "category": "redteam",
+    "categoryName": "RED TEAM",
+    "readTime": "9 MIN READ",
+    "summary": "Chaining certificate template misconfigurations (AD CS ESC1), msDS-KeyCredentialLink shadow credentials, and seamless SSO synchronization tokens into cross-boundary domain compromise.",
+    "author": "OSEC RESEARCH TEAM",
+    "tactic": "Privilege Escalation",
+    "technique": "T1078, T1558.004",
+    "severity": "HIGH",
+    "featured": true
+  },
+  {
+    "id": "fintech-api-logic-flaws",
+    "title": "Broken Object Level Auth & State Desync in Banking API Microservices",
+    "date": "2026-07-29",
+    "category": "advisory",
+    "categoryName": "ADVISORY",
+    "readTime": "6 MIN READ",
+    "summary": "Case study on discovering distributed race conditions and BOLA vulnerabilities in real-time transaction clearing pipelines under HTTP/2 multiplexing.",
+    "author": "OSEC RESEARCH TEAM",
+    "tactic": "Application Logic",
+    "technique": "API1:2023, API4:2023",
+    "severity": "CRITICAL",
+    "featured": true
+  }
+]

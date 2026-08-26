@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>Research & Advisory — OSEC.uz</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<header>
+<div class="wrap nav">
+  <a href="../index.html" class="logo">OSEC<span>.uz</span></a>
+  <div class="nav-center" id="navCenter">RESEARCH / TELEMETRY</div>
+  <div class="nav-right">
+    <a href="../index.html#surface">Explore</a>
+    <a href="index.html" class="active nav-accent">Research</a>
+    <a href="../index.html#contact">Engage →</a>
+  </div>
+</div>
+</header>
+
+<main>
+<article id="articleContainer">
+<div class="article-header">
+  <div class="wrap">
+    <a href="index.html" class="back-link">← Back to Research Archive</a>
+    <div class="label" id="postSubtitle"><span class="red">RESEARCH</span> / FIELD NOTE</div>
+    <h1 style="margin-top:20px" id="postTitle">Loading Research Article...</h1>
+    <div class="article-meta-bar" id="postMetaBar">
+      <span>DATE: <strong id="postDate">----.--.--</strong></span>
+      <span class="dot">/</span>
+      <span>CATEGORY: <strong id="postCategory" class="red">ANALYSIS</strong></span>
+      <span class="dot">/</span>
+      <span>READ TIME: <strong id="postReadTime">-- MIN</strong></span>
+      <span class="dot">/</span>
+      <span>AUTHOR: <strong id="postAuthor">OSEC RESEARCH</strong></span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap article-layout">
+  <div class="article-body" id="postContent">
+    <div style="padding: 40px 0; font-family: var(--mono); color: #666;">
+      FETCHING ENCRYPTED RESEARCH TELEMETRY...
+    </div>
+  </div>
+
+  <aside class="sidebar-sticky" id="postSidebar">
+    <div class="side-panel">
+      <h4>METADATA</h4>
+      <ul id="sidebarMeta">
+        <li><strong>TACTIC:</strong> <span id="metaTactic">Investigation</span></li>
+        <li><strong>TECHNIQUE:</strong> <span id="metaTechnique">MITRE ATT&CK</span></li>
+        <li><strong>STATUS:</strong> <span>Validated</span></li>
+      </ul>
+    </div>
+
+    <div class="side-panel">
+      <h4>OPERATIONAL SCOPE</h4>
+      <p style="font-size:0.75rem; color:#888; line-height:1.6" id="metaSummary">
+        Continuous adversarial simulation and defensive verification.
+      </p>
+    </div>
+  </aside>
+</div>
+</article>
+</main>
+
+<footer>
+<div class="wrap footer">
+  <div>© 2026 OSEC.uz · Offensive security & security validation</div>
+  <div class="footer-links">
+    <a href="index.html">Research & Blog</a>
+    <a href="../index.html">Home</a>
+    <a href="../admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
+    <a href="mailto:offseckh@icloud.com">Secure mail</a>
+  </div>
+</div>
+</footer>
+
+<script>
+  // Simple, robust client-side Markdown to HTML converter
+  function parseMarkdown(md) {
+    if (!md) return '';
+    
+    let html = md;
+    
+    // Escape raw HTML entities to prevent XSS
+    html = html
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    // Code blocks with optional language headers
+    html = html.replace(/```([a-zA-Z0-9_\-\.\s]*)\n([\s\S]*?)```/g, function(match, lang, code) {
+      const cleanLang = lang.trim() || 'TELEMETRY';
+      return `<div class="code-block">
+        <div class="code-header"><span>${cleanLang.toUpperCase()}</span><span>SOURCE</span></div>
+        <pre><code>${code.trim()}</code></pre>
+      </div>`;
+    });
+
+    // Blockquotes / Advisory callouts
+    html = html.replace(/^&gt;\s?(.*)$/gm, function(match, quote) {
+      return `<div class="advisory-box"><p>${quote}</p></div>`;
+    });
+
+    // Headers
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+    // Bold and italic
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // Inline code
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Unordered lists
+    html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>(\n|.)*?)(?=(<h|<div|<p|$))/g, '<ul>$1</ul>');
+
+    // Paragraphs
+    const paragraphs = html.split(/\n\n+/);
+    html = paragraphs.map(p => {
+      p = p.trim();
+      if (!p) return '';
+      if (p.startsWith('<h') || p.startsWith('<div') || p.startsWith('<ul') || p.startsWith('<pre')) {
+        return p;
+      }
+      return `<p>${p}</p>`;
+    }).join('\n');
+
+    return html;
+  }
+
+  // Extract URL parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const postId = urlParams.get('id') || 'bypassing-edr-syscalls';
+
+  fetch(`../posts/${encodeURIComponent(postId)}.json?t=` + Date.now())
+    .then(res => {
+      if (!res.ok) throw new Error('Post not found');
+      return res.json();
+    })
+    .then(data => {
+      document.title = `${data.title} — OSEC.uz`;
+      document.getElementById('postTitle').innerText = data.title;
+      document.getElementById('postDate').innerText = (data.date || '').replace(/-/g, '.');
+      document.getElementById('postCategory').innerText = data.categoryName || data.category?.toUpperCase() || 'RESEARCH';
+      document.getElementById('postReadTime').innerText = data.readTime || '5 MIN';
+      document.getElementById('postAuthor').innerText = data.author || 'OSEC RESEARCH TEAM';
+      document.getElementById('navCenter').innerText = `RESEARCH / ${data.categoryName || 'ANALYSIS'}`;
+
+      if (data.tactic) document.getElementById('metaTactic').innerText = data.tactic;
+      if (data.technique) document.getElementById('metaTechnique').innerText = data.technique;
+      if (data.summary) document.getElementById('metaSummary').innerText = data.summary;
+
+      document.getElementById('postContent').innerHTML = parseMarkdown(data.content || data.summary);
+    })
+    .catch(err => {
+      document.getElementById('postTitle').innerText = 'Research Article Not Found';
+      document.getElementById('postContent').innerHTML = `
+        <p>The requested research document could not be located or has been archived.</p>
+        <a href="index.html" class="btn btn-red" style="display:inline-flex; width:auto; padding:10px 20px; margin-top:20px;">
+          ← Return to Research Index
+        </a>
+      `;
+    });
+</script>
+</body>
+</html>
