@@ -1,5 +1,18 @@
 [
   {
+    "id": "gov-t-website-has-been-taken-down-by-hackers",
+    "title": "Gov't website has been taken down by hackers",
+    "date": "2026-08-27",
+    "category": "advisory",
+    "categoryName": "ADVISORY",
+    "readTime": "3 min",
+    "summary": "Team_CC allegedly hacked one of the subdomains of Niger gov't website",
+    "author": "OSEC RESEARCH TEAM",
+    "tactic": "",
+    "severity": "CRITICAL",
+    "featured": true
+  },
+  {
     "id": "bypassing-edr-syscalls",
     "title": "Bypassing Modern EDR Hooks via Direct Syscalls & Synthetic Stack Frames",
     "date": "2026-08-20",
