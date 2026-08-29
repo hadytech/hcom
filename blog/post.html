@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#090909">
 <title>Research & Advisory — OSEC.uz</title>
 <link rel="stylesheet" href="../style.css">
+<!-- Marked Markdown Parser (Local with CDN fallback) -->
+<script src="../assets/marked.min.js"></script>
+<script>
+  if (typeof marked === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"><\/script>');
+  }
+</script>
 </head>
 
 <body>
@@ -81,77 +88,38 @@
 </footer>
 
 <script>
-  // Simple, robust client-side Markdown to HTML converter
-  function parseMarkdown(md) {
+  // Setup marked renderer
+  function parseArticleMarkdown(md) {
     if (!md) return '';
-    
-    let html = md;
-    
-    // Escape raw HTML entities to prevent XSS (except for safe markdown constructs)
-    html = html
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+    if (typeof marked !== 'undefined') {
+      const renderer = {
+        code(token) {
+          const text = typeof token === 'object' ? token.text : token;
+          const lang = (typeof token === 'object' ? token.lang : arguments[1]) || 'BASH';
+          return `<div class="code-block"><div class="code-header"><span>${lang.toUpperCase()}</span><span>COMMAND / CODE</span></div><pre><code>${text}</code></pre></div>\n`;
+        },
+        blockquote(token) {
+          const text = typeof token === 'object' ? token.text : token;
+          return `<div class="advisory-box">${text}</div>\n`;
+        },
+        image(token) {
+          const href = typeof token === 'object' ? token.href : token;
+          const text = (typeof token === 'object' ? token.text : arguments[2]) || 'Research Image';
+          return `<figure class="img-figure"><img src="${href}" alt="${text}"><figcaption class="img-caption">${text}</figcaption></figure>\n`;
+        }
+      };
 
-    // Code blocks with optional language headers
-    html = html.replace(/```([a-zA-Z0-9_\-\.\s]*)\n([\s\S]*?)```/g, function(match, lang, code) {
-      const cleanLang = lang.trim() || 'TELEMETRY';
-      return `<div class="code-block">
-        <div class="code-header"><span>${cleanLang.toUpperCase()}</span><span>SOURCE</span></div>
-        <pre><code>${code.trim()}</code></pre>
-      </div>`;
-    });
+      marked.use({ renderer, gfm: true, breaks: false });
+      return marked.parse(md);
+    }
 
-    // Images: ![alt text](url)
-    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, url) {
-      const cleanUrl = url.trim();
-      const cleanAlt = alt.trim() || 'Research Image';
-      return `<figure class="img-figure"><img src="${cleanUrl}" alt="${cleanAlt}"><figcaption class="img-caption">${cleanAlt}</figcaption></figure>`;
-    });
-
-    // Links: [link text](url)
-    html = html.replace(/\[(.*?)\]\((.*?)\)/g, function(match, text, url) {
-      return `<a href="${url.trim()}" target="_blank" rel="noopener" style="color:var(--red); text-decoration:underline;">${text}</a>`;
-    });
-
-    // Blockquotes / Advisory callouts
-    html = html.replace(/^&gt;\s?(.*)$/gm, function(match, quote) {
-      return `<div class="advisory-box"><p>${quote}</p></div>`;
-    });
-
-    // Headers
-    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-
-    // Bold and italic
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-    // Inline code
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-    // Unordered lists
-    html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
-    html = html.replace(/(<li>.*<\/li>(\n|.)*?)(?=(<h|<div|<p|<figure|$))/g, '<ul>$1</ul>');
-
-    // Paragraphs
-    const paragraphs = html.split(/\n\n+/);
-    html = paragraphs.map(p => {
-      p = p.trim();
-      if (!p) return '';
-      if (p.startsWith('<h') || p.startsWith('<div') || p.startsWith('<ul') || p.startsWith('<pre') || p.startsWith('<figure')) {
-        return p;
-      }
-      return `<p>${p}</p>`;
-    }).join('\n');
-
-    return html;
+    // Ultra-safe fallback if marked isn't loaded
+    return '<pre>' + md + '</pre>';
   }
 
   // Extract URL parameter
   const urlParams = new URLSearchParams(window.location.search);
-  const postId = urlParams.get('id') || 'bypassing-edr-syscalls';
+  const postId = urlParams.get('id') || 'mtk-gatekeeper-pattern-extraction';
 
   fetch(`../posts/${encodeURIComponent(postId)}.json?t=` + Date.now())
     .then(res => {
@@ -171,7 +139,7 @@
       if (data.technique) document.getElementById('metaTechnique').innerText = data.technique;
       if (data.summary) document.getElementById('metaSummary').innerText = data.summary;
 
-      document.getElementById('postContent').innerHTML = parseMarkdown(data.content || data.summary);
+      document.getElementById('postContent').innerHTML = parseArticleMarkdown(data.content || data.summary);
     })
     .catch(err => {
       document.getElementById('postTitle').innerText = 'Research Article Not Found';

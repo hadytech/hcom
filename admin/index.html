@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#090909">
 <title>Admin Studio — OSEC.uz Authoring & Publishing</title>
 <link rel="stylesheet" href="../style.css">
+<!-- Marked Markdown Parser (Local with CDN fallback) -->
+<script src="../assets/marked.min.js"></script>
+<script>
+  if (typeof marked === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"><\/script>');
+  }
+</script>
 </head>
 
 <body>
@@ -179,48 +186,31 @@ void exploit() { ... }
   let authToken = sessionStorage.getItem('osec_admin_token') || '';
   let postsIndex = [];
 
-  // Robust markdown parser with image support
-  function renderMarkdown(md) {
+  // Robust Markdown Parser for Editor Preview using Marked
+  function renderMarkdownPreview(md) {
     if (!md) return '';
-    let html = md.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    
-    // Code blocks
-    html = html.replace(/```([a-zA-Z0-9_\-\.\s]*)\n([\s\S]*?)```/g, (match, lang, code) => `
-      <div class="code-block">
-        <div class="code-header"><span>${(lang || 'SOURCE').toUpperCase().trim()}</span><span>CODE</span></div>
-        <pre><code>${code.trim()}</code></pre>
-      </div>
-    `);
+    if (typeof marked !== 'undefined') {
+      const renderer = {
+        code(token) {
+          const text = typeof token === 'object' ? token.text : token;
+          const lang = (typeof token === 'object' ? token.lang : arguments[1]) || 'BASH';
+          return `<div class="code-block"><div class="code-header"><span>${lang.toUpperCase()}</span><span>CLI / CODE</span></div><pre><code>${text}</code></pre></div>\n`;
+        },
+        blockquote(token) {
+          const text = typeof token === 'object' ? token.text : token;
+          return `<div class="advisory-box">${text}</div>\n`;
+        },
+        image(token) {
+          const href = typeof token === 'object' ? token.href : token;
+          const text = (typeof token === 'object' ? token.text : arguments[2]) || 'Image';
+          return `<figure class="img-figure"><img src="${href}" alt="${text}"><figcaption class="img-caption">${text}</figcaption></figure>\n`;
+        }
+      };
 
-    // Images: ![alt](url)
-    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
-      const cleanAlt = alt.trim() || 'Image';
-      let cleanUrl = url.trim();
-      // Handle relative paths when previewing from /admin/
-      if (cleanUrl.startsWith('../assets/')) {
-        cleanUrl = cleanUrl.replace('../assets/', '../assets/');
-      }
-      return `<figure class="img-figure"><img src="${cleanUrl}" alt="${cleanAlt}"><figcaption class="img-caption">${cleanAlt}</figcaption></figure>`;
-    });
-
-    // Links: [text](url)
-    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener" style="color:var(--red); text-decoration:underline;">$1</a>');
-
-    html = html.replace(/^&gt;\s?(.*)$/gm, '<div class="advisory-box"><p>$1</p></div>');
-    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
-    html = html.replace(/(<li>.*<\/li>(\n|.)*?)(?=(<h|<div|<ul|<pre|<figure|<p|$))/g, '<ul>$1</ul>');
-
-    return html.split(/\n\n+/).map(p => {
-      p = p.trim();
-      if (!p) return '';
-      if (p.startsWith('<h') || p.startsWith('<div') || p.startsWith('<ul') || p.startsWith('<pre') || p.startsWith('<figure')) return p;
-      return `<p>${p}</p>`;
-    }).join('\n');
+      marked.use({ renderer, gfm: true, breaks: false });
+      return marked.parse(md);
+    }
+    return '<pre>' + md + '</pre>';
   }
 
   function initApp() {
@@ -272,7 +262,7 @@ void exploit() { ... }
   // Live preview
   const markdownTextarea = document.getElementById('markdownInput');
   markdownTextarea.addEventListener('input', (e) => {
-    document.getElementById('previewContainer').innerHTML = renderMarkdown(e.target.value);
+    document.getElementById('previewContainer').innerHTML = renderMarkdownPreview(e.target.value);
   });
 
   // Insert text at cursor helper
@@ -283,7 +273,7 @@ void exploit() { ... }
     textarea.value = val.substring(0, start) + text + val.substring(end);
     textarea.selectionStart = textarea.selectionEnd = start + text.length;
     textarea.focus();
-    document.getElementById('previewContainer').innerHTML = renderMarkdown(textarea.value);
+    document.getElementById('previewContainer').innerHTML = renderMarkdownPreview(textarea.value);
   }
 
   // Handle Image Upload / Paste
@@ -306,7 +296,6 @@ void exploit() { ... }
 
       if (authToken.startsWith('ghp_') || authToken.startsWith('github_pat_')) {
         try {
-          // Upload image directly to hadytech/hcom via GitHub REST API
           await commitGithubBinaryFile(`assets/images/${filename}`, base64Data, `Upload research asset: ${filename}`);
           const imageMarkdown = `\n\n![${cleanName}](../assets/images/${filename})\n\n`;
           insertAtCursor(markdownTextarea, imageMarkdown);
@@ -317,7 +306,6 @@ void exploit() { ... }
           insertAtCursor(markdownTextarea, `\n\n![${cleanName}](${dataUrl})\n\n`);
         }
       } else {
-        // Embed data URL directly for local draft mode
         insertAtCursor(markdownTextarea, `\n\n![${cleanName}](${dataUrl})\n\n`);
         statusEl.innerHTML = `<span style="color:#22c55e">✓ Embedded local image preview</span>`;
       }
@@ -373,7 +361,7 @@ void exploit() { ... }
         document.getElementById('postReadTimeInput').value = post.readTime || '5 MIN READ';
         document.getElementById('postSummaryInput').value = post.summary || '';
         document.getElementById('markdownInput').value = post.content || '';
-        document.getElementById('previewContainer').innerHTML = renderMarkdown(post.content || '');
+        document.getElementById('previewContainer').innerHTML = renderMarkdownPreview(post.content || '');
       });
   });
 
@@ -425,7 +413,6 @@ void exploit() { ... }
       content
     };
 
-    // Update index
     const existingIndex = postsIndex.findIndex(p => p.id === slug);
     const indexEntry = {
       id: slug,
@@ -457,9 +444,7 @@ void exploit() { ... }
     logEl.innerText = 'COMMITTING TO GITHUB REPOSITORY (hadytech/hcom)...';
 
     try {
-      // 1. Commit post JSON
       await commitGithubTextFile(`posts/${slug}.json`, JSON.stringify(postData, null, 2), `Add research post: ${title}`);
-      // 2. Commit posts.json
       await commitGithubTextFile('posts.json', JSON.stringify(updatedIndex, null, 2), `Update research index for: ${title}`);
 
       logEl.innerHTML = '<span style="color:#22c55e">✓ PUBLISHED TO GITHUB! DEPLOYING VIA GITHUB PAGES.</span>';
