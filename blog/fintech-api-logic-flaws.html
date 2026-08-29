@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>Broken Object Level Auth & State Desync in Banking API Microservices — OSEC Blog</title>
+<meta name="description" content="Case study on discovering distributed race conditions and BOLA vulnerabilities in real-time transaction clearing pipelines under HTTP/2 multiplexing.">
+<meta name="author" content="OSEC RESEARCH TEAM">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://osec.uz/blog/fintech-api-logic-flaws.html">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://osec.uz/blog/fintech-api-logic-flaws.html">
+<meta property="og:title" content="Broken Object Level Auth & State Desync in Banking API Microservices — OSEC Blog">
+<meta property="og:description" content="Case study on discovering distributed race conditions and BOLA vulnerabilities in real-time transaction clearing pipelines under HTTP/2 multiplexing.">
+<meta property="og:site_name" content="OSEC.uz">
+<meta property="article:published_time" content="2026-07-29">
+<meta property="article:author" content="OSEC RESEARCH TEAM">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://osec.uz/blog/fintech-api-logic-flaws.html">
+<meta name="twitter:title" content="Broken Object Level Auth & State Desync in Banking API Microservices — OSEC Blog">
+<meta name="twitter:description" content="Case study on discovering distributed race conditions and BOLA vulnerabilities in real-time transaction clearing pipelines under HTTP/2 multiplexing.">
+<meta name="twitter:creator" content="@hidoyatiyy">
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Broken Object Level Auth & State Desync in Banking API Microservices",
+  "description": "Case study on discovering distributed race conditions and BOLA vulnerabilities in real-time transaction clearing pipelines under HTTP/2 multiplexing.",
+  "datePublished": "2026-07-29",
+  "mainEntityOfPage": "https://osec.uz/blog/fintech-api-logic-flaws.html",
+  "author": {
+    "@type": "Person",
+    "name": "OSEC RESEARCH TEAM"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "OSEC.uz",
+    "url": "https://osec.uz/"
+  }
+}
+</script>
+
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<header>
+<div class="wrap nav">
+  <a href="../index.html" class="logo">OSEC<span>.uz</span></a>
+  <div class="nav-center">OSEC BLOG / ADVISORY</div>
+  <div class="nav-right">
+    <a href="../index.html#surface">Explore</a>
+    <a href="index.html" class="active nav-accent">Blog</a>
+    <a href="../index.html#contact">Engage →</a>
+  </div>
+</div>
+</header>
+
+<main>
+<article>
+<div class="article-header">
+  <div class="wrap">
+    <a href="index.html" class="back-link">← Back to Blog Archive</a>
+    <div class="label"><span class="red">BLOG</span> / ADVISORY</div>
+    <h1 style="margin-top:20px">Broken Object Level Auth & State Desync in Banking API Microservices</h1>
+    <div class="article-meta-bar">
+      <span>DATE: <strong>2026.07.29</strong></span>
+      <span class="dot">/</span>
+      <span>CATEGORY: <strong class="red">ADVISORY</strong></span>
+      <span class="dot">/</span>
+      <span>READ TIME: <strong>6 MIN READ</strong></span>
+      <span class="dot">/</span>
+      <span>AUTHOR: <strong>OSEC RESEARCH TEAM</strong></span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap article-layout">
+  <div class="article-body">
+    <p>Financial technology platforms commonly decompose their transactional backends into discrete microservices handling account ledgering, currency conversion, fraud scoring, and payment gateway dispatch. When state verification is decoupled across distributed asynchronous queues without atomic locking mechanisms, critical logic vulnerabilities emerge.</p>
+<div class="advisory-box">**Vulnerability Summary**
+A distributed race condition combined with Broken Object Level Authorization (BOLA / IDOR) allowed authenticated clients to initiate simultaneous settlement instructions, inducing double-spending in microservice ledgers.</div>
+<h2>1. The Idempotency Key Desynchronization</h2>
+<p>Modern REST/GraphQL financial APIs utilize an <code>Idempotency-Key</code> header to prevent double-charging on network retries. In the analyzed infrastructure, the API gateway validated idempotency key existence in a distributed Redis cache <em>prior</em> to initiating database row locks in the core ledger service.</p>
+<div class="code-block"><div class="code-header"><span>HTTP</span><span>COMMAND / CODE</span></div><pre><code>POST /api/v2/wallets/transfer HTTP/2
+Host: payments.internal.target
+Authorization: Bearer [REDACTED_USER_TOKEN]
+Content-Type: application/json
+Idempotency-Key: c94b8e21-0391-4d1a-8c44-77a8850b1001
+
+{
+  "source_account": "ACC-99210-UZS",
+  "destination_account": "ACC-44102-USD",
+  "amount": 5000000.00,
+  "currency": "UZS"
+}</code></pre></div>
+<h2>2. Single-Packet Execution via HTTP/2 Multiplexing</h2>
+<p>By synchronizing 30 HTTP/2 streams across a single TCP socket connection and broadcasting them within a unified network packet (Single-Packet Attack methodology), the incoming requests reached worker instances in identical microseconds. Because the cache write operations had sub-millisecond replication latency across nodes, multiple worker threads passed validation simultaneously before any balance decrement occurred.</p>
+<h2>3. BOLA in Ledger Audit Webhooks</h2>
+<p>In addition to concurrency desynchronization, the webhook subscription endpoint (<code>/api/v2/webhooks/{subscription_id}/replay</code>) did not verify ownership of the requesting tenant against the webhook identifier. This permitted attackers to inspect and replay historical settlement notifications of unrelated financial institutions.</p>
+<h2>4. Remediation Engineering</h2>
+<ul>
+<li><strong>Atomic Database Locking:</strong> Enforce strict pessimistic or serializable isolation level locking (<code>SELECT ... FOR UPDATE</code>) on wallet records during settlement.</li>
+<li><strong>Atomic Redis Key Claims:</strong> Utilize atomic Redis operations (<code>SETNX</code> with lease expiration) at the gateway layer before dispatching work to backend queues.</li>
+<li><strong>Tenant-scoped Context Enforcement:</strong> Ensure data layer queries enforce organization ID constraints (<code>WHERE tenant_id = :current_user_tenant</code>) unconditionally.</li>
+</ul>
+
+  </div>
+
+  <aside class="sidebar-sticky">
+    <div class="side-panel">
+      <h4>METADATA & ATT&CK</h4>
+      <ul>
+        <li><strong>TACTIC:</strong> <span>Application Logic</span></li>
+        <li><strong>TECHNIQUE:</strong> <span>API1:2023, API4:2023</span></li>
+        <li><strong>SEVERITY:</strong> <span class="red">CRITICAL</span></li>
+        <li><strong>STATUS:</strong> <span>Verified & Reproducible</span></li>
+      </ul>
+    </div>
+
+    <div class="side-panel">
+      <h4>TECHNICAL SCOPE</h4>
+      <p style="font-size:0.75rem; color:#888; line-height:1.6">
+        Case study on discovering distributed race conditions and BOLA vulnerabilities in real-time transaction clearing pipelines under HTTP/2 multiplexing.
+      </p>
+    </div>
+  </aside>
+</div>
+</article>
+</main>
+
+<footer>
+<div class="wrap footer">
+  <div>© 2026 OSEC.uz · Offensive security & security validation</div>
+  <div class="footer-links">
+    <a href="index.html">Blog</a>
+    <a href="../index.html">Home</a>
+    <a href="../admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
+    <a href="mailto:offseckh@icloud.com">Secure mail</a>
+  </div>
+</div>
+</footer>
+</body>
+</html>

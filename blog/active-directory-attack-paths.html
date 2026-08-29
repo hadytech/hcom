@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>Lateral Movement in Hybrid Active Directory & Entra ID Environments — OSEC Blog</title>
+<meta name="description" content="Chaining certificate template misconfigurations (AD CS ESC1), msDS-KeyCredentialLink shadow credentials, and seamless SSO synchronization tokens into cross-boundary domain compromise.">
+<meta name="author" content="OSEC RESEARCH TEAM">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://osec.uz/blog/active-directory-attack-paths.html">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://osec.uz/blog/active-directory-attack-paths.html">
+<meta property="og:title" content="Lateral Movement in Hybrid Active Directory & Entra ID Environments — OSEC Blog">
+<meta property="og:description" content="Chaining certificate template misconfigurations (AD CS ESC1), msDS-KeyCredentialLink shadow credentials, and seamless SSO synchronization tokens into cross-boundary domain compromise.">
+<meta property="og:site_name" content="OSEC.uz">
+<meta property="article:published_time" content="2026-08-11">
+<meta property="article:author" content="OSEC RESEARCH TEAM">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://osec.uz/blog/active-directory-attack-paths.html">
+<meta name="twitter:title" content="Lateral Movement in Hybrid Active Directory & Entra ID Environments — OSEC Blog">
+<meta name="twitter:description" content="Chaining certificate template misconfigurations (AD CS ESC1), msDS-KeyCredentialLink shadow credentials, and seamless SSO synchronization tokens into cross-boundary domain compromise.">
+<meta name="twitter:creator" content="@hidoyatiyy">
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Lateral Movement in Hybrid Active Directory & Entra ID Environments",
+  "description": "Chaining certificate template misconfigurations (AD CS ESC1), msDS-KeyCredentialLink shadow credentials, and seamless SSO synchronization tokens into cross-boundary domain compromise.",
+  "datePublished": "2026-08-11",
+  "mainEntityOfPage": "https://osec.uz/blog/active-directory-attack-paths.html",
+  "author": {
+    "@type": "Person",
+    "name": "OSEC RESEARCH TEAM"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "OSEC.uz",
+    "url": "https://osec.uz/"
+  }
+}
+</script>
+
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<header>
+<div class="wrap nav">
+  <a href="../index.html" class="logo">OSEC<span>.uz</span></a>
+  <div class="nav-center">OSEC BLOG / RED TEAM</div>
+  <div class="nav-right">
+    <a href="../index.html#surface">Explore</a>
+    <a href="index.html" class="active nav-accent">Blog</a>
+    <a href="../index.html#contact">Engage →</a>
+  </div>
+</div>
+</header>
+
+<main>
+<article>
+<div class="article-header">
+  <div class="wrap">
+    <a href="index.html" class="back-link">← Back to Blog Archive</a>
+    <div class="label"><span class="red">BLOG</span> / RED TEAM</div>
+    <h1 style="margin-top:20px">Lateral Movement in Hybrid Active Directory & Entra ID Environments</h1>
+    <div class="article-meta-bar">
+      <span>DATE: <strong>2026.08.11</strong></span>
+      <span class="dot">/</span>
+      <span>CATEGORY: <strong class="red">RED TEAM</strong></span>
+      <span class="dot">/</span>
+      <span>READ TIME: <strong>9 MIN READ</strong></span>
+      <span class="dot">/</span>
+      <span>AUTHOR: <strong>OSEC RESEARCH TEAM</strong></span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap article-layout">
+  <div class="article-body">
+    <p>Hybrid identity infrastructures connect legacy on-premises Active Directory Domain Services (AD DS) with cloud tenants via Entra ID Connect (formerly Azure AD Connect). During red team engagements, identity synchronization boundaries frequently introduce non-obvious lateral movement paths between on-prem domain controllers and cloud Global Administrator roles.</p>
+<div class="advisory-box">**Attack Surface Scope**
+A compromise of an on-premises machine hosting the Microsoft Entra Connect sync agent or certificate enrollment endpoints (AD CS) allows adversaries to escalate privileges across the entire corporate identity plane.</div>
+<h2>1. AD CS Template Misconfiguration (ESC1 &amp; ESC8)</h2>
+<p>Active Directory Certificate Services provides Public Key Infrastructure (PKI) for authentication. Misconfigured certificate templates that grant <code>CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT</code> (ESC1) permit any low-privileged domain user to request a client authentication certificate on behalf of privileged service accounts or Domain Admins.</p>
+<div class="code-block"><div class="code-header"><span>BASH</span><span>COMMAND / CODE</span></div><pre><code># 1. Request X.509 certificate specifying target Domain Admin as SAN
+certipy req -u lowpriv_user@corp.local -p 'Password123' \
+  -ca 'CORP-CA' -template 'VulnerableUserTemplate' \
+  -upn 'administrator@corp.local' -out admin.pfx
+
+# 2. Authenticate via PKINIT to obtain TGT & NT Hash
+certipy auth -pfx admin.pfx -dc-ip 10.10.10.5</code></pre></div>
+<h2>2. Shadow Credentials via msDS-KeyCredentialLink</h2>
+<p>When an attacker obtains write access over the <code>msDS-KeyCredentialLink</code> attribute of a target computer or user object (such as through delegated OU permissions or Access Control List inheritance flaws), they can inject a self-generated asymmetric public key into the object. By initiating a Kerberos PKINIT authentication flow against the Domain Controller, they receive a valid Ticket Granting Ticket (TGT) without altering the user&#39;s existing password.</p>
+<h2>3. Cloud Sync Account Hijacking</h2>
+<p>The Entra ID Connect Synchronization Service Account (<code>MSOL_*</code> / <code>Sync_*</code>) possesses directory replication privileges (<code>DS-Replication-Get-Changes-All</code>) in on-premises Active Directory. Extracting the local encrypted database credentials (via DPAPI / LocalDB access) yields credentials capable of performing DCSync attacks against the root forest domain.</p>
+<h2>4. Hardening Strategies</h2>
+<ul>
+<li><strong>Tier-0 Architecture:</strong> Treat the Entra Connect server and AD CS Certificate Authorities as Tier-0 assets with identical security controls to Domain Controllers.</li>
+<li><strong>Audit Certificate Templates:</strong> Prohibit <code>ENROLLEE_SUPPLIES_SUBJECT</code> alongside Client Authentication EKUs unless explicitly required and gated by manager approval.</li>
+<li><strong>Monitor Shadow Credential Modifications:</strong> Set alerts on event ID <code>5136</code> for modifications made to <code>msDS-KeyCredentialLink</code>.</li>
+</ul>
+
+  </div>
+
+  <aside class="sidebar-sticky">
+    <div class="side-panel">
+      <h4>METADATA & ATT&CK</h4>
+      <ul>
+        <li><strong>TACTIC:</strong> <span>Privilege Escalation</span></li>
+        <li><strong>TECHNIQUE:</strong> <span>T1078, T1558.004</span></li>
+        <li><strong>SEVERITY:</strong> <span class="red">HIGH</span></li>
+        <li><strong>STATUS:</strong> <span>Verified & Reproducible</span></li>
+      </ul>
+    </div>
+
+    <div class="side-panel">
+      <h4>TECHNICAL SCOPE</h4>
+      <p style="font-size:0.75rem; color:#888; line-height:1.6">
+        Chaining certificate template misconfigurations (AD CS ESC1), msDS-KeyCredentialLink shadow credentials, and seamless SSO synchronization tokens into cross-boundary domain compromise.
+      </p>
+    </div>
+  </aside>
+</div>
+</article>
+</main>
+
+<footer>
+<div class="wrap footer">
+  <div>© 2026 OSEC.uz · Offensive security & security validation</div>
+  <div class="footer-links">
+    <a href="index.html">Blog</a>
+    <a href="../index.html">Home</a>
+    <a href="../admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
+    <a href="mailto:offseckh@icloud.com">Secure mail</a>
+  </div>
+</div>
+</footer>
+</body>
+</html>

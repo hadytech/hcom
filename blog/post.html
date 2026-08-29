@@ -148,12 +148,16 @@
     return '<pre>' + md + '</pre>';
   }
 
-  // Extract URL parameter
+  // Extract URL parameter and redirect to pre-rendered static HTML
   const urlParams = new URLSearchParams(window.location.search);
-  const postId = urlParams.get('id') || 'mtk-gatekeeper-pattern-extraction';
-  const postUrl = `https://osec.uz/blog/post.html?id=${encodeURIComponent(postId)}`;
+  const postId = urlParams.get('id');
+  if (postId) {
+    window.location.replace(`${encodeURIComponent(postId)}.html`);
+  }
+  const fallbackId = postId || 'mtk-gatekeeper-pattern-extraction';
+  const postUrl = `https://osec.uz/blog/${encodeURIComponent(fallbackId)}.html`;
 
-  fetch(`../posts/${encodeURIComponent(postId)}.json?t=` + Date.now())
+  fetch(`../posts/${encodeURIComponent(fallbackId)}.json?t=` + Date.now())
     .then(res => {
       if (!res.ok) throw new Error('Post not found');
       return res.json();

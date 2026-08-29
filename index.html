@@ -218,7 +218,7 @@
     const grid = document.getElementById('dynamicBlogGrid');
     if (!grid) return;
     grid.innerHTML = posts.slice(0, 3).map(post => `
-      <a href="blog/post.html?id=${encodeURIComponent(post.id)}" class="blog-card">
+      <a href="blog/${encodeURIComponent(post.id)}.html" class="blog-card">
         <div>
           <div class="blog-card-meta">
             <span class="blog-badge ${post.category || 'exploit'}">${post.categoryName || post.category?.toUpperCase() || 'BLOG'}</span>

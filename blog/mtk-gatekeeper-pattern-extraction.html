@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>MediaTek BROM orqali Android Gatekeeper Pattern Extraction (Redmi 9A Forensics) — OSEC Blog</title>
+<meta name="description" content="MediaTek MT6762G (Redmi 9A) chipsetli Android qurilmalarida MTKClient va BROM rejimi orqali to'liq userdata.img dumpini olish, Gatekeeper credential materiallarini ajratish va offline pattern tahlili.">
+<meta name="author" content="SARDOR HASKER">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://osec.uz/blog/mtk-gatekeeper-pattern-extraction.html">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://osec.uz/blog/mtk-gatekeeper-pattern-extraction.html">
+<meta property="og:title" content="MediaTek BROM orqali Android Gatekeeper Pattern Extraction (Redmi 9A Forensics) — OSEC Blog">
+<meta property="og:description" content="MediaTek MT6762G (Redmi 9A) chipsetli Android qurilmalarida MTKClient va BROM rejimi orqali to'liq userdata.img dumpini olish, Gatekeeper credential materiallarini ajratish va offline pattern tahlili.">
+<meta property="og:site_name" content="OSEC.uz">
+<meta property="article:published_time" content="2026-08-29">
+<meta property="article:author" content="SARDOR HASKER">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://osec.uz/blog/mtk-gatekeeper-pattern-extraction.html">
+<meta name="twitter:title" content="MediaTek BROM orqali Android Gatekeeper Pattern Extraction (Redmi 9A Forensics) — OSEC Blog">
+<meta name="twitter:description" content="MediaTek MT6762G (Redmi 9A) chipsetli Android qurilmalarida MTKClient va BROM rejimi orqali to'liq userdata.img dumpini olish, Gatekeeper credential materiallarini ajratish va offline pattern tahlili.">
+<meta name="twitter:creator" content="@hidoyatiyy">
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "MediaTek BROM orqali Android Gatekeeper Pattern Extraction (Redmi 9A Forensics)",
+  "description": "MediaTek MT6762G (Redmi 9A) chipsetli Android qurilmalarida MTKClient va BROM rejimi orqali to'liq userdata.img dumpini olish, Gatekeeper credential materiallarini ajratish va offline pattern tahlili.",
+  "datePublished": "2026-08-29",
+  "mainEntityOfPage": "https://osec.uz/blog/mtk-gatekeeper-pattern-extraction.html",
+  "author": {
+    "@type": "Person",
+    "name": "SARDOR HASKER"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "OSEC.uz",
+    "url": "https://osec.uz/"
+  }
+}
+</script>
+
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<header>
+<div class="wrap nav">
+  <a href="../index.html" class="logo">OSEC<span>.uz</span></a>
+  <div class="nav-center">OSEC BLOG / HARDWARE / DFIR</div>
+  <div class="nav-right">
+    <a href="../index.html#surface">Explore</a>
+    <a href="index.html" class="active nav-accent">Blog</a>
+    <a href="../index.html#contact">Engage →</a>
+  </div>
+</div>
+</header>
+
+<main>
+<article>
+<div class="article-header">
+  <div class="wrap">
+    <a href="index.html" class="back-link">← Back to Blog Archive</a>
+    <div class="label"><span class="red">BLOG</span> / HARDWARE / DFIR</div>
+    <h1 style="margin-top:20px">MediaTek BROM orqali Android Gatekeeper Pattern Extraction (Redmi 9A Forensics)</h1>
+    <div class="article-meta-bar">
+      <span>DATE: <strong>2026.08.29</strong></span>
+      <span class="dot">/</span>
+      <span>CATEGORY: <strong class="red">HARDWARE / DFIR</strong></span>
+      <span class="dot">/</span>
+      <span>READ TIME: <strong>8 MIN READ</strong></span>
+      <span class="dot">/</span>
+      <span>AUTHOR: <strong>SARDOR HASKER</strong></span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap article-layout">
+  <div class="article-body">
+    <p>MediaTek (MTK) chipsetlarida (masalan, Redmi 9A / Helio G25) ishlovchi qurilmalar apparat darajasidagi raqamli forensic (DFIR) tahlilda muhim nishon hisoblanadi. Ushbu maqolada <strong>MediaTek BootROM (BROM)</strong> rejimidan foydalangan holda qurilmaning to&#39;liq <code>userdata.img</code> bo&#39;limini jismoniy dump qilish, <strong>Android Gatekeeper</strong> himoyalangan credential materiallarini ajratish va offline pattern tahlilini amalga oshirish metodologiyasini ko&#39;rib chiqamiz.</p>
+<div class="advisory-box">**Muhim Eslatma & Huquqiy Doira**
+Ushbu tadqiqot raqamli ekspertiza (Digital Forensics) va apparat xavfsizligi tahlili uchun mo'ljallangan. Faqat `printgpt`, `r` va `rl` buyruqlaridan foydalanilsa, telefonning flesh xotirasi o'zgarmasdan qoladi (Forensic Read-Only Acquisition).</div>
+<hr>
+<h2>0. macOS Muhitini Tayyorlash</h2>
+<p>macOS (Apple Silicon / Intel) muhitida USB drayverlari va Python bog&#39;liqliklarini sozlaymiz:</p>
+<div class="code-block"><div class="code-header"><span>BASH</span><span>COMMAND / CODE</span></div><pre><code># 1. Homebrew paket menejeri orqali asosiy drayverlarni o'rnatish
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install macfuse openssl libusb python@3.9</code></pre></div>
+<p><em>(Eslatma: macfuse tizim kengaytmasi o&#39;rnatilgach, Mac qayta ishga tushirilishi kerak).</em> </p>
+<h3>MTKClient repozitoriyasini o&#39;rnatish:</h3>
+<div class="code-block"><div class="code-header"><span>BASH</span><span>COMMAND / CODE</span></div><pre><code>git clone https://github.com/bkerler/mtkclient
+cd mtkclient
+python3.9 -m venv mtk_venv
+source mtk_venv/bin/activate
+
+# Bog'liqliklar va Capstone disassembler
+pip3 install --pre --no-binary capstone capstone
+pip3 install PySide6 libusb
+pip3 install -r requirements.txt
+
+# Asbob tayyorligini tekshirish
+python mtk.py --help</code></pre></div>
+<hr>
+<h2>1-Qadam: BROM Rejimi &amp; GPT Bo&#39;limlar Jadvali</h2>
+<p>MediaTek BootROM rejimi apparat darajasida UART/USB orqali to&#39;g&#39;ridan-to&#39;g&#39;ri xotira bilan ishlash imkonini beradi.</p>
+<div class="code-block"><div class="code-header"><span>BASH</span><span>COMMAND / CODE</span></div><pre><code>cd ~/mtkclient
+source mtk_venv/bin/activate
+
+# GPT partition jadvalini o'qish
+sudo python mtk.py printgpt</code></pre></div>
+<ol>
+<li><strong>Qurilmani ulash:</strong> Redmi 9A o&#39;chirilgan holatida <strong>Ovoz balandligini oshirish (+)</strong> va <strong>Ovoz balandligini pasaytirish (-)</strong> tugmalarini bir vaqtda bosib turing.</li>
+<li>USB kabelni Mac&#39;ga ulang. MTKClient apparat identifikatorlarini (<code>0e8d:0003</code> MTK USB Port) aniqlashi bilan tugmalarni qo&#39;yib yuboring.</li>
+<li>Natijada xotiradagi bo&#39;limlar xaritasi (<code>userdata</code>, <code>boot</code>, <code>system</code>, <code>metadata</code>) namoyon bo&#39;ladi.</li>
+</ol>
+<div class="advisory-box">**Troubleshooting:** Agar handshake xatosi yuz bersa, faqat `Ovozni pasaytirish (-)` tugmasi bilan yoki USB-A to Type-C to'g'ridan-to'g'ri kabel orqali qayta urinib ko'ring.</div>
+<hr>
+<h2>2-Qadam: Userdata Bo&#39;limining Bit-by-Bit Jismoniy Dumpini Olish</h2>
+<p>BROM protokoli orqali foydalanuvchi ma&#39;lumotlari joylashgan bo&#39;limni o&#39;qiymiz:</p>
+<div class="code-block"><div class="code-header"><span>BASH</span><span>COMMAND / CODE</span></div><pre><code>sudo python mtk.py r userdata userdata.img</code></pre></div>
+<p>Bu buyruq Mac&#39;da <code>userdata.img</code> nomli to&#39;liq disk tasvirini (raw image) hosil qiladi. Jarayon davomida apparatga yozish buyrug&#39;i yuborilmaydi (Read-Only).</p>
+<p><em>(To&#39;liq barcha xotira bo&#39;limlarini dump qilish uchun)</em>:</p>
+<div class="code-block"><div class="code-header"><span>BASH</span><span>COMMAND / CODE</span></div><pre><code>sudo python mtk.py rl dump_folder</code></pre></div>
+<hr>
+<h2>3-Qadam: Android Gatekeeper &amp; Credential Materiallarini Ajratish</h2>
+<p>Android 10+ tizimlarida qulf patterni eski Android versiyalaridagi oddiy SHA-1 <code>gesture.key</code> faylida saqlanmaydi. Zamonaviy AOSP arxitekturasida <strong>Gatekeeper TEE (TrustZone)</strong> komponenti qo&#39;llaniladi:</p>
+<ol>
+<li><code>userdata.img</code> tasvirini tahlil qilish vositasi (<code>testdisk</code>, <code>photorec</code> yoki ext4/f2fs forensic mount) yordamida ochamiz.</li>
+<li>Credential artefaktlarini quyidagi yo&#39;llardan ajratib olamiz:<ul>
+<li><code>/data/system/gatekeeper.pattern.key</code> (Scrypt / TEE derivatsiya blobi)</li>
+<li><code>/data/system/gatekeeper.password.key</code></li>
+<li><code>/data/system/locksettings.db</code> (SQLite konfiguratsiyasi va SID ma&#39;lumotlari)</li>
+<li><code>/data/system/users/0/spblob/</code> (Synthetic Password kalitlari)</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>4-Qadam: Offline Pattern Rekonstruktsiyasi &amp; Brute-Force</h2>
+<p>Ajratib olingan <code>gatekeeper.pattern.key</code> tarkibida Gatekeeper versiyasi, Salt va kalit xeshi saqlanadi:</p>
+<ul>
+<li>Android 9/10 Gatekeeper scrypt parametrlari: <code>N=16384, r=8, p=1</code>.</li>
+<li>3x3 panjaradagi patternlar jami <strong>389,112</strong> ta mumkin bo&#39;lgan kombinatsiyani tashkil qiladi.</li>
+<li>Python asosidagi offline tahlil skripti orqali 4–9 nuqtali pattern kombinatsiyalari xotiradagi xesh bilan solishtiriladi va bir necha soniya ichida aniq ketma-ketlik (masalan: <code>0-1-2-5-8</code>) aniqlanadi.</li>
+</ul>
+<hr>
+<h2>📚 Texnik Manbalar &amp; Havolalar</h2>
+<ol>
+<li><strong>MTKClient Research Tool:</strong> <a href="https://github.com/bkerler/mtkclient">github.com/bkerler/mtkclient</a> (B. Kerler)</li>
+<li><strong>Android Open Source Project (AOSP) Gatekeeper Architecture:</strong> <a href="https://source.android.com/docs/security/features/authentication/gatekeeper">source.android.com/docs/security/features/authentication/gatekeeper</a></li>
+<li><strong>NIST SP 800-101 Rev. 1:</strong> <em>Guidelines on Mobile Device Forensics</em>, National Institute of Standards and Technology.</li>
+<li><strong>MITRE ATT&amp;CK:</strong> <a href="https://attack.mitre.org/techniques/T1200/">Technique T1200 (Hardware Additions)</a> &amp; <a href="https://attack.mitre.org/techniques/T1003/">T1003 (OS Credential Dumping)</a>.</li>
+<li><strong>MediaTek BootROM Bypass Research:</strong> CVE-2020-0069 (Cmdq driver privilege escalation &amp; SLA/DAA bypass).</li>
+</ol>
+
+  </div>
+
+  <aside class="sidebar-sticky">
+    <div class="side-panel">
+      <h4>METADATA & ATT&CK</h4>
+      <ul>
+        <li><strong>TACTIC:</strong> <span>Hardware Credential Access</span></li>
+        <li><strong>TECHNIQUE:</strong> <span>T1200, T1003, T1542.002</span></li>
+        <li><strong>SEVERITY:</strong> <span class="red">HIGH</span></li>
+        <li><strong>STATUS:</strong> <span>Verified & Reproducible</span></li>
+      </ul>
+    </div>
+
+    <div class="side-panel">
+      <h4>TECHNICAL SCOPE</h4>
+      <p style="font-size:0.75rem; color:#888; line-height:1.6">
+        MediaTek MT6762G (Redmi 9A) chipsetli Android qurilmalarida MTKClient va BROM rejimi orqali to'liq userdata.img dumpini olish, Gatekeeper credential materiallarini ajratish va offline pattern tahlili.
+      </p>
+    </div>
+  </aside>
+</div>
+</article>
+</main>
+
+<footer>
+<div class="wrap footer">
+  <div>© 2026 OSEC.uz · Offensive security & security validation</div>
+  <div class="footer-links">
+    <a href="index.html">Blog</a>
+    <a href="../index.html">Home</a>
+    <a href="../admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
+    <a href="mailto:offseckh@icloud.com">Secure mail</a>
+  </div>
+</div>
+</footer>
+</body>
+</html>

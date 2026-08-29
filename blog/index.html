@@ -130,7 +130,7 @@
     }
 
     container.innerHTML = posts.map(p => `
-      <a href="post.html?id=${encodeURIComponent(p.id)}" class="archive-row" data-category="${p.category}" data-title="${(p.title + ' ' + (p.summary || '')).toLowerCase()}">
+      <a href="${encodeURIComponent(p.id)}.html" class="archive-row" data-category="${p.category}" data-title="${(p.title + ' ' + (p.summary || '')).toLowerCase()}">
         <div class="date">${(p.date || '').replace(/-/g, '.')}</div>
         <div class="main">
           <h2>${p.title}</h2>
