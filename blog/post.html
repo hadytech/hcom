@@ -4,7 +4,40 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090909">
-<title>Research & Advisory — OSEC.uz</title>
+<title>OSEC.uz Blog</title>
+<meta name="description" content="Offensive security writeups, hardware forensics, and technical vulnerability disclosures.">
+<meta name="author" content="OSEC.uz">
+<meta name="robots" content="index, follow">
+<link rel="canonical" id="canonicalUrl" href="https://osec.uz/blog/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" id="ogUrl" content="https://osec.uz/blog/">
+<meta property="og:title" id="ogTitle" content="OSEC.uz Blog">
+<meta property="og:description" id="ogDesc" content="Offensive security writeups and research.">
+<meta property="og:site_name" content="OSEC.uz">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" id="twUrl" content="https://osec.uz/blog/">
+<meta name="twitter:title" id="twTitle" content="OSEC.uz Blog">
+<meta name="twitter:description" id="twDesc" content="Offensive security writeups and research.">
+<meta name="twitter:creator" content="@hidoyatiyy">
+
+<!-- JSON-LD Structured Data Container -->
+<script type="application/ld+json" id="articleSchema">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "OSEC Blog Post",
+  "publisher": {
+    "@type": "Organization",
+    "name": "OSEC.uz",
+    "url": "https://osec.uz/"
+  }
+}
+</script>
+
 <link rel="stylesheet" href="../style.css">
 <!-- Marked Markdown Parser (Local with CDN fallback) -->
 <script src="../assets/marked.min.js"></script>
@@ -19,10 +52,10 @@
 <header>
 <div class="wrap nav">
   <a href="../index.html" class="logo">OSEC<span>.uz</span></a>
-  <div class="nav-center" id="navCenter">RESEARCH / TELEMETRY</div>
+  <div class="nav-center" id="navCenter">OSEC BLOG / TECHNICAL</div>
   <div class="nav-right">
     <a href="../index.html#surface">Explore</a>
-    <a href="index.html" class="active nav-accent">Research</a>
+    <a href="index.html" class="active nav-accent">Blog</a>
     <a href="../index.html#contact">Engage →</a>
   </div>
 </div>
@@ -32,9 +65,9 @@
 <article id="articleContainer">
 <div class="article-header">
   <div class="wrap">
-    <a href="index.html" class="back-link">← Back to Research Archive</a>
-    <div class="label" id="postSubtitle"><span class="red">RESEARCH</span> / FIELD NOTE</div>
-    <h1 style="margin-top:20px" id="postTitle">Loading Research Article...</h1>
+    <a href="index.html" class="back-link">← Back to Blog Archive</a>
+    <div class="label" id="postSubtitle"><span class="red">BLOG</span> / FIELD NOTE</div>
+    <h1 style="margin-top:20px" id="postTitle">Loading Article...</h1>
     <div class="article-meta-bar" id="postMetaBar">
       <span>DATE: <strong id="postDate">----.--.--</strong></span>
       <span class="dot">/</span>
@@ -79,7 +112,7 @@
 <div class="wrap footer">
   <div>© 2026 OSEC.uz · Offensive security & security validation</div>
   <div class="footer-links">
-    <a href="index.html">Research & Blog</a>
+    <a href="index.html">Blog</a>
     <a href="../index.html">Home</a>
     <a href="../admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
     <a href="mailto:offseckh@icloud.com">Secure mail</a>
@@ -112,14 +145,13 @@
       marked.use({ renderer, gfm: true, breaks: false });
       return marked.parse(md);
     }
-
-    // Ultra-safe fallback if marked isn't loaded
     return '<pre>' + md + '</pre>';
   }
 
   // Extract URL parameter
   const urlParams = new URLSearchParams(window.location.search);
   const postId = urlParams.get('id') || 'mtk-gatekeeper-pattern-extraction';
+  const postUrl = `https://osec.uz/blog/post.html?id=${encodeURIComponent(postId)}`;
 
   fetch(`../posts/${encodeURIComponent(postId)}.json?t=` + Date.now())
     .then(res => {
@@ -127,26 +159,60 @@
       return res.json();
     })
     .then(data => {
-      document.title = `${data.title} — OSEC.uz`;
+      const pageTitle = `${data.title} — OSEC Blog`;
+      document.title = pageTitle;
+      
+      // Update DOM
       document.getElementById('postTitle').innerText = data.title;
       document.getElementById('postDate').innerText = (data.date || '').replace(/-/g, '.');
-      document.getElementById('postCategory').innerText = data.categoryName || data.category?.toUpperCase() || 'RESEARCH';
+      document.getElementById('postCategory').innerText = data.categoryName || data.category?.toUpperCase() || 'BLOG';
       document.getElementById('postReadTime').innerText = data.readTime || '5 MIN';
       document.getElementById('postAuthor').innerText = data.author || 'OSEC RESEARCH TEAM';
-      document.getElementById('navCenter').innerText = `RESEARCH / ${data.categoryName || 'ANALYSIS'}`;
+      document.getElementById('navCenter').innerText = `OSEC BLOG / ${data.categoryName || 'TECHNICAL'}`;
 
       if (data.tactic) document.getElementById('metaTactic').innerText = data.tactic;
       if (data.technique) document.getElementById('metaTechnique').innerText = data.technique;
       if (data.summary) document.getElementById('metaSummary').innerText = data.summary;
 
       document.getElementById('postContent').innerHTML = parseArticleMarkdown(data.content || data.summary);
+
+      // Refine Dynamic SEO
+      const desc = data.summary || data.title;
+      document.querySelector('meta[name="description"]').setAttribute('content', desc);
+      document.getElementById('canonicalUrl').setAttribute('href', postUrl);
+      document.getElementById('ogUrl').setAttribute('content', postUrl);
+      document.getElementById('ogTitle').setAttribute('content', pageTitle);
+      document.getElementById('ogDesc').setAttribute('content', desc);
+      document.getElementById('twUrl').setAttribute('content', postUrl);
+      document.getElementById('twTitle').setAttribute('content', pageTitle);
+      document.getElementById('twDesc').setAttribute('content', desc);
+
+      // Update JSON-LD
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": data.title,
+        "description": desc,
+        "datePublished": data.date,
+        "author": {
+          "@type": "Person",
+          "name": data.author || "OSEC Researcher"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "OSEC.uz",
+          "url": "https://osec.uz/"
+        },
+        "mainEntityOfPage": postUrl
+      };
+      document.getElementById('articleSchema').textContent = JSON.stringify(schema);
     })
     .catch(err => {
-      document.getElementById('postTitle').innerText = 'Research Article Not Found';
+      document.getElementById('postTitle').innerText = 'Article Not Found';
       document.getElementById('postContent').innerHTML = `
-        <p>The requested research document could not be located or has been archived.</p>
+        <p>The requested article could not be located or has been moved.</p>
         <a href="index.html" class="btn btn-red" style="display:inline-flex; width:auto; padding:10px 20px; margin-top:20px;">
-          ← Return to Research Index
+          ← Return to Blog Archive
         </a>
       `;
     });

@@ -4,8 +4,57 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090909">
-<title>OSEC.uz — Offensive Security & Attack Surface Validation</title>
-<meta name="description" content="Offensive security, continuous attack surface discovery, red teaming, and adversary emulation.">
+<title>OSEC.uz — Offensive Security, Red Teaming & Attack Surface Validation</title>
+<meta name="description" content="OSEC.uz delivers continuous attack surface validation, red team assessments, exploit development, and in-depth vulnerability research.">
+<meta name="keywords" content="offensive security, cybersecurity, red teaming, penetration testing, attack surface validation, exploit dev, security research, vulnerability analysis, osec, osec uz">
+<meta name="author" content="OSEC.uz">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://osec.uz/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://osec.uz/">
+<meta property="og:title" content="OSEC.uz — Offensive Security & Attack Surface Validation">
+<meta property="og:description" content="Security is an assumption until someone tests it. Continuous attack surface discovery, red teaming, and threat intelligence.">
+<meta property="og:site_name" content="OSEC.uz">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://osec.uz/">
+<meta name="twitter:title" content="OSEC.uz — Offensive Security & Attack Surface Validation">
+<meta name="twitter:description" content="Security is an assumption until someone tests it. Continuous attack surface discovery, red teaming, and threat intelligence.">
+<meta name="twitter:creator" content="@hidoyatiyy">
+
+<!-- Structured Data / JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://osec.uz/#organization",
+      "name": "OSEC.uz",
+      "url": "https://osec.uz/",
+      "description": "Offensive security, attack surface validation, and adversarial red teaming.",
+      "sameAs": [
+        "https://t.me/osecuz",
+        "https://t.me/hidoyatiyy"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://osec.uz/#website",
+      "url": "https://osec.uz/",
+      "name": "OSEC.uz",
+      "publisher": {
+        "@id": "https://osec.uz/#organization"
+      }
+    }
+  ]
+}
+</script>
+
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -16,7 +65,7 @@
   <div class="nav-center">OFFENSIVE SECURITY / 01</div>
   <div class="nav-right">
     <a href="#surface">Explore</a>
-    <a href="#blog" class="nav-accent">Research</a>
+    <a href="#blog" class="nav-accent">Blog</a>
     <a href="#contact">Engage →</a>
   </div>
 </div>
@@ -117,15 +166,15 @@
 </div>
 </section>
 
-<!-- SECTION 05: DYNAMIC BLOG / RESEARCH -->
+<!-- SECTION 05: DYNAMIC BLOG -->
 <section class="blog-section" id="blog">
 <div class="wrap">
   <div class="blog-head">
-    <div class="label"><span class="red">05</span> / Field notes & research</div>
+    <div class="label"><span class="red">05</span> / Field notes & blog</div>
     <h2>Exploits, research<br>& tactical findings.</h2>
     <div class="blog-head-side">
       <p>Technical writeups, novel tradecraft, vulnerability advisories, and defensive bypass analyses.</p>
-      <a href="blog/index.html" class="view-all-btn">All Research Archive →</a>
+      <a href="blog/index.html" class="view-all-btn">All Blog Posts →</a>
     </div>
   </div>
 
@@ -154,7 +203,7 @@
 <div class="wrap footer">
   <div>© 2026 OSEC.uz · Offensive security & security validation</div>
   <div class="footer-links">
-    <a href="blog/index.html">Research & Blog</a>
+    <a href="blog/index.html">Blog</a>
     <a href="admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
     <a href="http://orqoyin.uz" target="_blank" rel="noopener">Orqoyin</a>
     <a href="https://t.me/hidoyatiyy" target="_blank" rel="noopener">@hidoyatiyy</a>
@@ -165,36 +214,6 @@
 
 <script>
   // Dynamic Blog Loader for Landing Page
-  const defaultPosts = [
-    {
-      "id": "bypassing-edr-syscalls",
-      "title": "Bypassing Modern EDR Hooks via Direct Syscalls & Synthetic Stack Frames",
-      "date": "2026-08-20",
-      "category": "exploit",
-      "categoryName": "EXPLOIT DEV",
-      "readTime": "7 MIN READ",
-      "summary": "Analyzing user-mode API unhooking, dynamic SSN resolution via HalosGate, and synthetic stack spoofing to defeat call-stack telemetry in modern Windows endpoints."
-    },
-    {
-      "id": "active-directory-attack-paths",
-      "title": "Lateral Movement in Hybrid Active Directory & Entra ID Environments",
-      "date": "2026-08-11",
-      "category": "redteam",
-      "categoryName": "RED TEAM",
-      "readTime": "9 MIN READ",
-      "summary": "Chaining certificate template misconfigurations (AD CS ESC1), msDS-KeyCredentialLink shadow credentials, and seamless SSO synchronization tokens into cross-boundary domain compromise."
-    },
-    {
-      "id": "fintech-api-logic-flaws",
-      "title": "Broken Object Level Auth & State Desync in Banking API Microservices",
-      "date": "2026-07-29",
-      "category": "advisory",
-      "categoryName": "ADVISORY",
-      "readTime": "6 MIN READ",
-      "summary": "Case study on discovering distributed race conditions and BOLA vulnerabilities in real-time transaction clearing pipelines under HTTP/2 multiplexing."
-    }
-  ];
-
   function renderGrid(posts) {
     const grid = document.getElementById('dynamicBlogGrid');
     if (!grid) return;
@@ -202,17 +221,17 @@
       <a href="blog/post.html?id=${encodeURIComponent(post.id)}" class="blog-card">
         <div>
           <div class="blog-card-meta">
-            <span class="blog-badge ${post.category || 'exploit'}">${post.categoryName || post.category?.toUpperCase() || 'RESEARCH'}</span>
-            <span class="blog-date">${post.date.replace(/-/g, '.')}</span>
+            <span class="blog-badge ${post.category || 'exploit'}">${post.categoryName || post.category?.toUpperCase() || 'BLOG'}</span>
+            <span class="blog-date">${(post.date || '').replace(/-/g, '.')}</span>
           </div>
           <div class="blog-card-content">
             <h3>${post.title}</h3>
-            <p>${post.summary}</p>
+            <p>${post.summary || ''}</p>
           </div>
         </div>
         <div class="blog-card-footer">
           <span>${post.readTime || '5 MIN READ'}</span>
-          <span class="read-arrow">Read analysis →</span>
+          <span class="read-arrow">Read article →</span>
         </div>
       </a>
     `).join('');
@@ -221,7 +240,7 @@
   fetch('posts.json?t=' + Date.now())
     .then(res => res.ok ? res.json() : Promise.reject())
     .then(data => renderGrid(data))
-    .catch(() => renderGrid(defaultPosts));
+    .catch(() => {});
 </script>
 </body>
 </html>

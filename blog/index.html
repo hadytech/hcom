@@ -4,8 +4,43 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090909">
-<title>Research & Advisories — OSEC.uz</title>
-<meta name="description" content="Offensive security research, adversary tradecraft, technical vulnerability writeups, and security advisories from OSEC.uz.">
+<title>Blog & Research Archive — OSEC.uz</title>
+<meta name="description" content="Technical blog, vulnerability disclosures, adversary tradecraft, hardware forensics, and offensive security research from OSEC.uz.">
+<meta name="keywords" content="security blog, offensive security blog, exploit development, red team tactics, hardware forensics, mtkclient, cyber advisories, osec blog">
+<meta name="author" content="OSEC.uz">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://osec.uz/blog/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="blog">
+<meta property="og:url" content="https://osec.uz/blog/">
+<meta property="og:title" content="Blog & Research Archive — OSEC.uz">
+<meta property="og:description" content="Technical writeups, threat tradecraft, vulnerability advisories, and forensic analysis.">
+<meta property="og:site_name" content="OSEC.uz">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://osec.uz/blog/">
+<meta name="twitter:title" content="Blog & Research Archive — OSEC.uz">
+<meta name="twitter:description" content="Technical writeups, threat tradecraft, vulnerability advisories, and forensic analysis.">
+<meta name="twitter:creator" content="@hidoyatiyy">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "OSEC.uz Security Blog",
+  "url": "https://osec.uz/blog/",
+  "description": "Offensive security research, adversary tradecraft, and technical advisories.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "OSEC.uz",
+    "url": "https://osec.uz/"
+  }
+}
+</script>
+
 <link rel="stylesheet" href="../style.css">
 </head>
 
@@ -13,10 +48,10 @@
 <header>
 <div class="wrap nav">
   <a href="../index.html" class="logo">OSEC<span>.uz</span></a>
-  <div class="nav-center">RESEARCH & FIELD NOTES</div>
+  <div class="nav-center">OFFENSIVE SECURITY / BLOG</div>
   <div class="nav-right">
     <a href="../index.html#surface">Explore</a>
-    <a href="index.html" class="active nav-accent">Research</a>
+    <a href="index.html" class="active nav-accent">Blog</a>
     <a href="../index.html#contact">Engage →</a>
   </div>
 </div>
@@ -27,9 +62,9 @@
 <div class="wrap">
   <div class="archive-hero-grid">
     <div>
-      <div class="label"><span class="red">RESEARCH ARCHIVE</span> / OSEC LABS</div>
-      <h1 style="margin-top:25px">Threat tradecraft & disclosures.</h1>
-      <p>Original security research, kernel & endpoint evasion techniques, identity path abuse, and vulnerability analyses published by OSEC.uz researchers.</p>
+      <div class="label"><span class="red">BLOG ARCHIVE</span> / OSEC LABS</div>
+      <h1 style="margin-top:25px">Threat tradecraft & blog.</h1>
+      <p>Original security research, kernel & endpoint evasion techniques, identity path abuse, hardware forensics, and vulnerability analyses published by OSEC.uz.</p>
     </div>
     <div class="side-panel">
       <h4>OPERATING PRINCIPLES</h4>
@@ -48,19 +83,19 @@
   <div class="archive-controls">
     <div class="filter-tags" id="categoryFilters">
       <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="exploit">Exploit Dev</button>
+      <button class="filter-btn" data-filter="exploit">Exploit & Hardware</button>
       <button class="filter-btn" data-filter="redteam">Red Team</button>
       <button class="filter-btn" data-filter="advisory">Advisory</button>
     </div>
     <div class="search-box">
-      <input type="text" id="postSearch" placeholder="Search research..." aria-label="Search articles">
+      <input type="text" id="postSearch" placeholder="Search blog posts..." aria-label="Search articles">
     </div>
   </div>
 
   <div class="archive-list" id="postsContainer">
     <!-- Rendered dynamically -->
     <div style="padding: 40px 20px; font-family: var(--mono); color:#666; font-size:0.75rem;">
-      INITIALIZING REPOSITORY TELEMETRY...
+      LOADING BLOG POSTS...
     </div>
   </div>
 </div>
@@ -72,6 +107,7 @@
   <div>© 2026 OSEC.uz · Offensive security & security validation</div>
   <div class="footer-links">
     <a href="../index.html">Home</a>
+    <a href="index.html">Blog</a>
     <a href="../admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
     <a href="http://orqoyin.uz" target="_blank" rel="noopener">Orqoyin</a>
     <a href="https://t.me/hidoyatiyy" target="_blank" rel="noopener">@hidoyatiyy</a>
@@ -82,51 +118,25 @@
 
 <script>
   let allPosts = [];
-  const defaultFallback = [
-    {
-      "id": "bypassing-edr-syscalls",
-      "title": "Bypassing Modern EDR Hooks via Direct Syscalls & Synthetic Stack Frames",
-      "date": "2026-08-20",
-      "category": "exploit",
-      "categoryName": "EXPLOIT DEV",
-      "summary": "A deep dive into bypassing userland hooks in ntdll.dll using dynamic SSN resolution, indirect syscall stubs, and synthetic call stack spoofing."
-    },
-    {
-      "id": "active-directory-attack-paths",
-      "title": "Lateral Movement in Hybrid Active Directory & Entra ID Environments",
-      "date": "2026-08-11",
-      "category": "redteam",
-      "categoryName": "RED TEAM",
-      "summary": "Exploiting certificate template misconfigurations (AD CS ESC1), msDS-KeyCredentialLink shadow credentials, and seamless SSO synchronization tokens."
-    },
-    {
-      "id": "fintech-api-logic-flaws",
-      "title": "Broken Object Level Auth & State Desync in Banking API Microservices",
-      "date": "2026-07-29",
-      "category": "advisory",
-      "categoryName": "ADVISORY",
-      "summary": "Identifying distributed transactional race conditions and UUID predictable object reference flaws in payment ledger validation routines."
-    }
-  ];
 
   function renderArchive(posts) {
     const container = document.getElementById('postsContainer');
     if (!posts.length) {
       container.innerHTML = `
         <div style="padding:60px 20px; font-family:var(--mono); color:#777; font-size:0.75rem;">
-          NO RESEARCH ARTICLES FOUND MATCHING QUERY.
+          NO ARTICLES FOUND MATCHING QUERY.
         </div>`;
       return;
     }
 
     container.innerHTML = posts.map(p => `
-      <a href="post.html?id=${encodeURIComponent(p.id)}" class="archive-row" data-category="${p.category}" data-title="${(p.title + ' ' + p.summary).toLowerCase()}">
+      <a href="post.html?id=${encodeURIComponent(p.id)}" class="archive-row" data-category="${p.category}" data-title="${(p.title + ' ' + (p.summary || '')).toLowerCase()}">
         <div class="date">${(p.date || '').replace(/-/g, '.')}</div>
         <div class="main">
           <h2>${p.title}</h2>
           <p>${p.summary || ''}</p>
         </div>
-        <div class="cat"><span class="blog-badge ${p.category || 'exploit'}">${p.categoryName || p.category?.toUpperCase() || 'RESEARCH'}</span></div>
+        <div class="cat"><span class="blog-badge ${p.category || 'exploit'}">${p.categoryName || p.category?.toUpperCase() || 'BLOG'}</span></div>
         <div class="action">READ →</div>
       </a>
     `).join('');
@@ -138,7 +148,7 @@
     const query = (document.getElementById('postSearch').value || '').toLowerCase().trim();
 
     const filtered = allPosts.filter(p => {
-      const matchCategory = (filter === 'all' || p.category === filter);
+      const matchCategory = (filter === 'all' || p.category === filter || (filter === 'exploit' && (p.category === 'exploit' || p.category === 'hardware')));
       const matchSearch = (!query || (p.title + ' ' + (p.summary || '') + ' ' + (p.content || '')).toLowerCase().includes(query));
       return matchCategory && matchSearch;
     });
@@ -165,8 +175,7 @@
       applyFilters();
     })
     .catch(() => {
-      allPosts = defaultFallback;
-      applyFilters();
+      container.innerHTML = '<div style="padding:40px 20px; font-family:var(--mono); color:#777;">Unable to load posts index.</div>';
     });
 </script>
 </body>
