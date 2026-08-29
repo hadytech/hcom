@@ -1,5 +1,19 @@
 [
   {
+    "id": "mtk-gatekeeper-pattern-extraction",
+    "title": "MediaTek BROM orqali Android Gatekeeper Pattern Extraction (Redmi 9A Forensics)",
+    "date": "2026-08-29",
+    "category": "exploit",
+    "categoryName": "HARDWARE / DFIR",
+    "readTime": "8 MIN READ",
+    "summary": "MediaTek chipsetli Android (Redmi 9A) qurilmalarida MTKClient va BROM rejimi orqali to'liq userdata.img dumpini olish, Gatekeeper credential materiallarini ajratish va offline pattern tahlili.",
+    "author": "SARDOR HASKER",
+    "tactic": "Hardware Credential Access",
+    "technique": "T1200, T1003",
+    "severity": "HIGH",
+    "featured": true
+  },
+  {
     "id": "gov-t-website-has-been-taken-down-by-hackers",
     "title": "Gov't website has been taken down by hackers",
     "date": "2026-08-27",
