@@ -1592,3 +1592,285 @@ footer {
   font-size: 0.6rem;
   color: var(--muted);
 }
+
+/* SECTION 06: OUR TRIBE */
+.tribe {
+  padding: 120px 0 100px;
+  border-bottom: 1px solid var(--line);
+  background: #101110;
+}
+
+.tribe-head {
+  display: grid;
+  grid-template-columns: 240px 1fr 1fr;
+  gap: 40px;
+  align-items: end;
+  padding-bottom: 50px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tribe-head h2 {
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.07em;
+  font-weight: 500;
+}
+
+.tribe-head p {
+  color: #898984;
+  line-height: 1.8;
+  max-width: 420px;
+}
+
+.tribe-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--line);
+}
+
+.tribe-card {
+  padding: 28px 22px 28px 0;
+  border-right: 1px solid var(--line);
+  min-height: 240px;
+}
+
+.tribe-card:not(:first-child) {
+  padding-left: 22px;
+}
+
+.tribe-card:last-child {
+  border-right: 0;
+}
+
+.tribe-no {
+  font: 500 1.6rem var(--mono);
+  color: #484944;
+}
+
+.tribe-card h3 {
+  font-size: 1rem;
+  margin-top: 45px;
+}
+
+.tribe-role {
+  display: block;
+  font: 500 0.68rem var(--mono);
+  color: var(--red);
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+
+.tribe-card p {
+  font-size: 0.75rem;
+  color: #73746f;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+
+@media (max-width: 900px) {
+  .tribe-head {
+    grid-template-columns: 1fr;
+  }
+  .tribe-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tribe-card:nth-child(odd) {
+    padding-left: 0;
+  }
+  .tribe-card:nth-child(even) {
+    border-right: 0;
+  }
+  .tribe-card:nth-child(n+3) {
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 560px) {
+  .tribe-grid {
+    grid-template-columns: 1fr;
+  }
+  .tribe-card {
+    padding-left: 0 !important;
+    border-right: 0;
+  }
+  .tribe-card:not(:first-child) {
+    border-top: 1px solid var(--line);
+  }
+}
+
+.tribe-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.05);
+  border: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+
+.tribe-photo + .tribe-no {
+  display: none;
+}
+
+.tribe-photo ~ h3 {
+  margin-top: 0;
+}
+
+.tribe-cert {
+  display: inline-block;
+  margin-top: 14px;
+  font: 500 0.65rem var(--mono);
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--red);
+}
+
+.tribe-cert:hover {
+  color: var(--red);
+}
+
+/* ===== DESIGN POLISH: readability, rhythm, accessibility, responsive ===== */
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Legible small text (was 0.58–0.7rem) */
+.nav-center { font-size: 0.66rem; }
+.nav-right { font-size: 0.72rem; gap: clamp(14px, 2vw, 26px); }
+.flow p { font-size: 0.82rem; }
+.flow h3 { font-size: 0.82rem; letter-spacing: 0.04em; }
+.tribe-card p { font-size: 0.86rem; color: #8b8c86; }
+.tribe-role { font-size: 0.72rem; letter-spacing: 0.06em; }
+.tribe-cert { font-size: 0.72rem; }
+
+/* Fluid section rhythm */
+.proof,
+.tribe,
+.blog-section {
+  padding-block: clamp(70px, 10vw, 125px);
+}
+
+/* Tribe cards: fix photo sizing, add a refined card treatment */
+.tribe-photo {
+  height: auto;
+}
+
+.tribe-grid {
+  gap: 0;
+  margin-top: 0;
+}
+
+.tribe-card {
+  display: flex;
+  flex-direction: column;
+  transition: background 0.25s ease;
+}
+
+.tribe-card:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tribe-photo {
+  transition: filter 0.35s ease, transform 0.35s ease;
+}
+
+.tribe-card:hover .tribe-photo {
+  filter: grayscale(0) contrast(1.05);
+}
+
+.tribe-card h3 {
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.tribe-card p {
+  max-width: 34ch;
+}
+
+.tribe-cert {
+  align-self: flex-start;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  header { height: 64px; }
+  .tribe-head { gap: 20px; }
+  .tribe-card,
+  .tribe-card:not(:first-child) {
+    padding: 28px 20px;
+  }
+  .tribe-card:nth-child(odd) { padding-left: 0; }
+  .tribe-card:nth-child(even) { padding-right: 0; }
+  .discovery-copy,
+  .report-copy { padding: 64px 0; }
+  .discovery-visual,
+  .report-ui { min-height: 380px; }
+}
+
+/* Phones */
+@media (max-width: 600px) {
+  .nav-right { gap: 14px; font-size: 0.7rem; }
+  .nav-right a[href="#surface"] { display: none; }
+  .node { min-height: 220px; }
+  .discovery-visual,
+  .report-ui { min-height: 300px; }
+  .tribe-card,
+  .tribe-card:not(:first-child),
+  .tribe-card:nth-child(odd),
+  .tribe-card:nth-child(even) {
+    padding: 28px 0;
+    min-height: auto;
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    column-gap: 18px;
+    align-items: start;
+  }
+  .tribe-photo {
+    grid-row: 1 / span 4;
+    margin-bottom: 0;
+  }
+  .tribe-card h3,
+  .tribe-card .tribe-role,
+  .tribe-card p,
+  .tribe-card .tribe-cert { grid-column: 2; }
+  .tribe-card h3 { font-size: 1.05rem; }
+  .tribe-card .tribe-role { margin-top: 4px; }
+  .cta-actions { max-width: none; }
+  .btn { width: 100%; text-align: center; justify-content: center; }
+}
+
+@media (max-width: 380px) {
+  .nav-right a:not(.nav-accent):not(:last-child) { display: none; }
+  .tribe-card,
+  .tribe-card:not(:first-child),
+  .tribe-card:nth-child(odd),
+  .tribe-card:nth-child(even) { grid-template-columns: 76px 1fr; }
+}
+
+/* Large screens */
+@media (min-width: 1700px) {
+  :root { --max: 1480px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
