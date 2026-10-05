@@ -1728,3 +1728,149 @@ footer {
 .tribe-cert:hover {
   color: var(--red);
 }
+
+/* ===== DESIGN POLISH: readability, rhythm, accessibility, responsive ===== */
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Legible small text (was 0.58–0.7rem) */
+.nav-center { font-size: 0.66rem; }
+.nav-right { font-size: 0.72rem; gap: clamp(14px, 2vw, 26px); }
+.flow p { font-size: 0.82rem; }
+.flow h3 { font-size: 0.82rem; letter-spacing: 0.04em; }
+.tribe-card p { font-size: 0.86rem; color: #8b8c86; }
+.tribe-role { font-size: 0.72rem; letter-spacing: 0.06em; }
+.tribe-cert { font-size: 0.72rem; }
+
+/* Fluid section rhythm */
+.proof,
+.tribe,
+.blog-section {
+  padding-block: clamp(70px, 10vw, 125px);
+}
+
+/* Tribe cards: fix photo sizing, add a refined card treatment */
+.tribe-photo {
+  height: auto;
+}
+
+.tribe-grid {
+  gap: 0;
+  margin-top: 0;
+}
+
+.tribe-card {
+  display: flex;
+  flex-direction: column;
+  transition: background 0.25s ease;
+}
+
+.tribe-card:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tribe-photo {
+  transition: filter 0.35s ease, transform 0.35s ease;
+}
+
+.tribe-card:hover .tribe-photo {
+  filter: grayscale(0) contrast(1.05);
+}
+
+.tribe-card h3 {
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.tribe-card p {
+  max-width: 34ch;
+}
+
+.tribe-cert {
+  align-self: flex-start;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  header { height: 64px; }
+  .tribe-head { gap: 20px; }
+  .tribe-card,
+  .tribe-card:not(:first-child) {
+    padding: 28px 20px;
+  }
+  .tribe-card:nth-child(odd) { padding-left: 0; }
+  .tribe-card:nth-child(even) { padding-right: 0; }
+  .discovery-copy,
+  .report-copy { padding: 64px 0; }
+  .discovery-visual,
+  .report-ui { min-height: 380px; }
+}
+
+/* Phones */
+@media (max-width: 600px) {
+  .nav-right { gap: 14px; font-size: 0.7rem; }
+  .nav-right a[href="#surface"] { display: none; }
+  .node { min-height: 220px; }
+  .discovery-visual,
+  .report-ui { min-height: 300px; }
+  .tribe-card,
+  .tribe-card:not(:first-child),
+  .tribe-card:nth-child(odd),
+  .tribe-card:nth-child(even) {
+    padding: 28px 0;
+    min-height: auto;
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    column-gap: 18px;
+    align-items: start;
+  }
+  .tribe-photo {
+    grid-row: 1 / span 4;
+    margin-bottom: 0;
+  }
+  .tribe-card h3,
+  .tribe-card .tribe-role,
+  .tribe-card p,
+  .tribe-card .tribe-cert { grid-column: 2; }
+  .tribe-card h3 { font-size: 1.05rem; }
+  .tribe-card .tribe-role { margin-top: 4px; }
+  .cta-actions { max-width: none; }
+  .btn { width: 100%; text-align: center; justify-content: center; }
+}
+
+@media (max-width: 380px) {
+  .nav-right a:not(.nav-accent):not(:last-child) { display: none; }
+  .tribe-card,
+  .tribe-card:not(:first-child),
+  .tribe-card:nth-child(odd),
+  .tribe-card:nth-child(even) { grid-template-columns: 76px 1fr; }
+}
+
+/* Large screens */
+@media (min-width: 1700px) {
+  :root { --max: 1480px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
