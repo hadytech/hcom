@@ -1708,11 +1708,11 @@ footer {
   margin-bottom: 24px;
 }
 
-.tribe-photo + .tribe-no {
+.tribe-photo-link + .tribe-no {
   display: none;
 }
 
-.tribe-photo ~ h3 {
+.tribe-photo-link ~ h3 {
   margin-top: 0;
 }
 
@@ -1840,10 +1840,10 @@ img {
     column-gap: 18px;
     align-items: start;
   }
-  .tribe-photo {
+  .tribe-photo-link {
     grid-row: 1 / span 4;
-    margin-bottom: 0;
   }
+  .tribe-photo { margin-bottom: 0; }
   .tribe-card h3,
   .tribe-card .tribe-role,
   .tribe-card p,
@@ -1874,3 +1874,37 @@ img {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* ===== TRIBE / PROFILE PAGES ===== */
+.tribe-head-side { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+.tribe-card h3 a, .tribe-name a { color: inherit; }
+.tribe-card h3 a:hover, .tribe-name a:hover { color: var(--red); }
+.tribe-name { font-size: 1.15rem; letter-spacing: -0.02em; font-weight: 700; margin-top: 0; }
+.tribe-page { padding-top: 40px; border-top: 0; }
+.tribe-photo { max-width: 100%; }
+
+.profile-hero { padding: 150px 0 90px; border-bottom: 1px solid var(--line); background: var(--black); }
+.profile-hero h1 { font-size: clamp(2.6rem, 6vw, 5.5rem); line-height: 0.95; letter-spacing: -0.07em; font-weight: 500; margin-top: 22px; }
+.crumbs { font: 500 0.72rem var(--mono); color: #777; margin-bottom: 40px; }
+.crumbs a:hover { color: var(--red); }
+.profile-lead { max-width: 62ch; color: #9a9b95; line-height: 1.8; margin-top: 22px; font-size: 1rem; }
+.profile-grid { display: grid; grid-template-columns: minmax(240px, 380px) 1fr; gap: clamp(32px, 6vw, 90px); align-items: start; }
+.profile-photo { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border: 1px solid var(--line); filter: grayscale(1) contrast(1.05); }
+.profile-role { font: 500 0.8rem var(--mono); color: var(--red); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 14px; }
+.profile-h { font: 500 0.72rem var(--mono); text-transform: uppercase; letter-spacing: 0.12em; color: #777; margin: 40px 0 14px; }
+.profile-list { list-style: none; border-top: 1px solid var(--line); }
+.profile-list li { padding: 12px 0; border-bottom: 1px solid var(--line); color: #bdbcb6; font-size: 0.92rem; }
+.profile-list a { border-bottom: 1px solid var(--red); }
+.profile-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.profile-tags span { font: 500 0.72rem var(--mono); border: 1px solid var(--line-light); padding: 6px 10px; color: #a9a8a2; }
+.profile-more { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 70px; padding-top: 24px; border-top: 1px solid var(--line); font: 500 0.78rem var(--mono); color: #777; }
+.profile-more a { color: var(--ink); border-bottom: 1px solid var(--red); }
+
+@media (max-width: 800px) {
+  .profile-hero { padding: 110px 0 60px; }
+  .profile-grid { grid-template-columns: 1fr; }
+  .profile-photo { max-width: 320px; }
+}
+
+.tribe-photo-link { display: block; }
+.tribe-name { margin-top: 0; }
