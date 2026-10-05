@@ -1715,3 +1715,16 @@ footer {
 .tribe-photo ~ h3 {
   margin-top: 0;
 }
+
+.tribe-cert {
+  display: inline-block;
+  margin-top: 14px;
+  font: 500 0.65rem var(--mono);
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--red);
+}
+
+.tribe-cert:hover {
+  color: var(--red);
+}
