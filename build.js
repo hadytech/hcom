@@ -37,6 +37,33 @@ posts.forEach(post => {
   const displayDate = (fullPost.date || '').replace(/-/g, '.');
   const catName = fullPost.categoryName || fullPost.category?.toUpperCase() || 'BLOG';
 
+  const authorName = fullPost.author || 'OSEC RESEARCH TEAM';
+  const ldJson = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BlogPosting',
+        headline: fullPost.title,
+        description: fullPost.summary || fullPost.title,
+        datePublished: fullPost.date,
+        dateModified: fullPost.date,
+        image: 'https://osec.uz/assets/images/og-cover.png',
+        mainEntityOfPage: postUrl,
+        author: { '@type': authorName === 'OSEC RESEARCH TEAM' ? 'Organization' : 'Person', name: authorName },
+        publisher: { '@type': 'Organization', '@id': 'https://osec.uz/#organization', name: 'OSEC.uz', url: 'https://osec.uz/', logo: { '@type': 'ImageObject', url: 'https://osec.uz/assets/images/og-cover.png' } },
+        isPartOf: { '@type': 'Blog', '@id': 'https://osec.uz/blog/#blog', name: 'OSEC.uz Security Blog', url: 'https://osec.uz/blog/' }
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'OSEC.uz', item: 'https://osec.uz/' },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://osec.uz/blog/' },
+          { '@type': 'ListItem', position: 3, name: fullPost.title, item: postUrl }
+        ]
+      }
+    ]
+  }, null, 2).replace(/</g, '\\u003c');
+
   const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -55,6 +82,7 @@ posts.forEach(post => {
 <meta property="og:title" content="${pageTitle}">
 <meta property="og:description" content="${cleanSummary}">
 <meta property="og:site_name" content="OSEC.uz">
+<meta property="og:image" content="https://osec.uz/assets/images/og-cover.png">
 <meta property="article:published_time" content="${fullPost.date}">
 <meta property="article:author" content="${fullPost.author || 'OSEC RESEARCH TEAM'}">
 
@@ -62,30 +90,19 @@ posts.forEach(post => {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="${postUrl}">
 <meta name="twitter:title" content="${pageTitle}">
+<meta name="twitter:image" content="https://osec.uz/assets/images/og-cover.png">
 <meta name="twitter:description" content="${cleanSummary}">
 <meta name="twitter:creator" content="@hidoyatiyy">
 
 <!-- Structured Data (JSON-LD) -->
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "${fullPost.title.replace(/"/g, '\\"')}",
-  "description": "${cleanSummary.replace(/"/g, '\\"')}",
-  "datePublished": "${fullPost.date}",
-  "mainEntityOfPage": "${postUrl}",
-  "author": {
-    "@type": "Person",
-    "name": "${fullPost.author || 'OSEC RESEARCH TEAM'}"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "OSEC.uz",
-    "url": "https://osec.uz/"
-  }
-}
+${ldJson}
 </script>
 
+<link rel="alternate" type="application/rss+xml" title="OSEC.uz Blog" href="https://osec.uz/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="../style.css">
 </head>
 
@@ -97,6 +114,7 @@ posts.forEach(post => {
   <div class="nav-right">
     <a href="../index.html#surface">Explore</a>
     <a href="index.html" class="active nav-accent">Blog</a>
+    <a href="../tribe/index.html">Our Tribe</a>
     <a href="../index.html#contact">Engage →</a>
   </div>
 </div>
@@ -154,6 +172,8 @@ posts.forEach(post => {
   <div class="footer-links">
     <a href="index.html">Blog</a>
     <a href="../index.html">Home</a>
+    <a href="../tribe/index.html">Our Tribe</a>
+    <a href="../services/index.html">Services</a>
     <a href="../admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
     <a href="mailto:offseckh@icloud.com">Secure mail</a>
   </div>
