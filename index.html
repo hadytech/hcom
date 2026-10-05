@@ -4,9 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090909">
-<title>OSEC.uz — Offensive Security, Red Teaming & Attack Surface Validation</title>
-<meta name="description" content="OSEC.uz delivers continuous attack surface validation, red team assessments, exploit development, and in-depth vulnerability research.">
-<meta name="keywords" content="offensive security, cybersecurity, red teaming, penetration testing, attack surface validation, exploit dev, security research, vulnerability analysis, osec, osec uz">
+<meta name="geo.region" content="UZ">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<title>OSEC.uz — Offensive Security, Red Teaming & Penetration Testing from Uzbekistan</title>
+<meta name="description" content="OSEC.uz is an offensive security team from Uzbekistan: red teaming, penetration testing, attack surface validation, exploit development and vulnerability research. Meet the OSEC tribe: Sardor G'ulomjonov, Ibrohim Akbarov, Hidoyatxon Atabaev.">
+<meta name="keywords" content="OSEC, OSEC.uz, osec uz, OSEC Uzbekistan, offensive security Uzbekistan, penetration testing Uzbekistan, red team Uzbekistan, kiberxavfsizlik, pentest O'zbekiston, Sardor G'ulomjonov, Ibrohim Akbarov, Hidoyatxon Atabaev, attack surface validation, exploit development">
 <meta name="author" content="OSEC.uz">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical" href="https://osec.uz/">
@@ -18,15 +20,21 @@
 <meta property="og:description" content="Security is an assumption until someone tests it. Continuous attack surface discovery, red teaming, and threat intelligence.">
 <meta property="og:site_name" content="OSEC.uz">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://osec.uz/assets/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OSEC.uz — Offensive security from Uzbekistan">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://osec.uz/">
 <meta name="twitter:title" content="OSEC.uz — Offensive Security & Attack Surface Validation">
 <meta name="twitter:description" content="Security is an assumption until someone tests it. Continuous attack surface discovery, red teaming, and threat intelligence.">
+<meta name="twitter:image" content="https://osec.uz/assets/images/og-cover.png">
 <meta name="twitter:creator" content="@hidoyatiyy">
 
 <!-- Structured Data / JSON-LD -->
+<!-- LD:START -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -35,8 +43,35 @@
       "@type": "Organization",
       "@id": "https://osec.uz/#organization",
       "name": "OSEC.uz",
+      "alternateName": [
+        "OSEC",
+        "OSEC Uzbekistan",
+        "osec.uz"
+      ],
       "url": "https://osec.uz/",
-      "description": "Offensive security, attack surface validation, and adversarial red teaming.",
+      "logo": "https://osec.uz/assets/images/og-cover.png",
+      "image": "https://osec.uz/assets/images/og-cover.png",
+      "description": "OSEC.uz is an offensive security team from Uzbekistan: red teaming, penetration testing, attack surface validation, exploit development and vulnerability research.",
+      "areaServed": "UZ",
+      "knowsAbout": [
+        "Offensive security",
+        "Red teaming",
+        "Penetration testing",
+        "Attack surface validation",
+        "Exploit development",
+        "Vulnerability research"
+      ],
+      "member": [
+        {
+          "@id": "https://osec.uz/tribe/sardor-gulomjonov/#person"
+        },
+        {
+          "@id": "https://osec.uz/tribe/ibrohim-akbarov/#person"
+        },
+        {
+          "@id": "https://osec.uz/tribe/hidoyatxon-atabaev/#person"
+        }
+      ],
       "sameAs": [
         "https://t.me/osecuz",
         "https://t.me/hidoyatiyy"
@@ -49,11 +84,87 @@
       "name": "OSEC.uz",
       "publisher": {
         "@id": "https://osec.uz/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://osec.uz/tribe/sardor-gulomjonov/#person",
+      "name": "Sardor G'ulomjonov",
+      "url": "https://osec.uz/tribe/sardor-gulomjonov/",
+      "image": "https://osec.uz/assets/images/tribe/sardor-gulomjonov.webp",
+      "jobTitle": "AppSec / Penetration Tester",
+      "description": "Sardor G'ulomjonov is an application security (AppSec) and penetration testing specialist with 2 years of total professional experience. Currently working at Davr Bank as an AppSec / Penetration Tester, Sardor is a member of the OSEC.uz offensive security tribe.",
+      "knowsAbout": [
+        "Application security",
+        "Penetration testing",
+        "Offensive security"
+      ],
+      "memberOf": {
+        "@id": "https://osec.uz/#organization"
+      },
+      "alternateName": [
+        "Sardor Gulomjonov",
+        "Sardor G‘ulomjonov"
+      ],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Davr Bank"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://osec.uz/tribe/ibrohim-akbarov/#person",
+      "name": "Ibrohim Akbarov",
+      "url": "https://osec.uz/tribe/ibrohim-akbarov/",
+      "image": "https://osec.uz/assets/images/tribe/ibrohim-akbarov.webp",
+      "jobTitle": "Penetration Tester",
+      "description": "Ibrohim Akbarov is a penetration tester and cybersecurity specialist and a member of the OSEC.uz offensive security tribe. Experience includes penetration testing as a Security Developer at a consulting firm, a penetration testing internship at the Ministry of Internal Affairs, and serving as Chief Cybersecurity Specialist at the State Tax Committee. Ibrohim also completed the Hack The Box Mini Pro Labs: Solar certificate.",
+      "knowsAbout": [
+        "Penetration testing",
+        "Web application attacks",
+        "Exploit chaining",
+        "Source code review",
+        "FreeBSD exploitation"
+      ],
+      "memberOf": {
+        "@id": "https://osec.uz/#organization"
+      },
+      "alternateName": [
+        "Ibrahim Akbarov"
+      ],
+      "hasCredential": {
+        "@type": "EducationalOccupationalCredential",
+        "name": "Hack The Box Mini Pro Labs: Solar",
+        "credentialCategory": "certificate",
+        "recognizedBy": {
+          "@type": "Organization",
+          "name": "Hack The Box"
+        },
+        "dateCreated": "2025-09-26"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://osec.uz/tribe/hidoyatxon-atabaev/#person",
+      "name": "Hidoyatxon Atabaev",
+      "url": "https://osec.uz/tribe/hidoyatxon-atabaev/",
+      "image": "https://osec.uz/assets/images/tribe/hidoyatxon-atabaev.webp",
+      "jobTitle": "Vibe Hacker / Developer",
+      "description": "Hidoyatxon Atabaev is a developer and vibe hacker and a member of the OSEC.uz offensive security tribe, building tooling and finding weaknesses with an AI-assisted workflow.",
+      "knowsAbout": [
+        "Software development",
+        "Offensive security",
+        "AI-assisted security research"
+      ],
+      "memberOf": {
+        "@id": "https://osec.uz/#organization"
       }
     }
   ]
 }
 </script>
+<!-- LD:END -->
 
 <link rel="stylesheet" href="style.css">
 </head>
@@ -66,7 +177,7 @@
   <div class="nav-right">
     <a href="#surface">Explore</a>
     <a href="#blog" class="nav-accent">Blog</a>
-    <a href="#tribe">Our Tribe</a>
+    <a href="tribe/index.html">Our Tribe</a>
     <a href="#contact">Engage →</a>
   </div>
 </div>
@@ -180,7 +291,11 @@
   </div>
 
   <div class="blog-grid" id="dynamicBlogGrid">
-    <!-- Dynamic Cards Rendered via JS -->
+    <!-- BLOG:START -->
+    <a href="blog/mtk-gatekeeper-pattern-extraction.html" class="blog-card"><div><div class="blog-card-meta"><span class="blog-badge exploit">HARDWARE / DFIR</span><span class="blog-date">2026.08.29</span></div><div class="blog-card-content"><h3>MediaTek BROM orqali Android Gatekeeper Pattern Extraction (Redmi 9A Forensics)</h3><p>MediaTek chipsetli Android (Redmi 9A) qurilmalarida MTKClient va BROM rejimi orqali to'liq userdata.img dumpini olish, Gatekeeper credential materiallarini ajratish va offline pattern tahlili.</p></div></div><div class="blog-card-footer"><span>8 MIN READ</span><span class="read-arrow">Read article →</span></div></a>
+    <a href="blog/gov-t-website-has-been-taken-down-by-hackers.html" class="blog-card"><div><div class="blog-card-meta"><span class="blog-badge advisory">ADVISORY</span><span class="blog-date">2026.08.27</span></div><div class="blog-card-content"><h3>Gov't website has been taken down by hackers</h3><p>Team_CC allegedly hacked one of the subdomains of Niger gov't website</p></div></div><div class="blog-card-footer"><span>3 min</span><span class="read-arrow">Read article →</span></div></a>
+    <a href="blog/bypassing-edr-syscalls.html" class="blog-card"><div><div class="blog-card-meta"><span class="blog-badge exploit">EXPLOIT DEV</span><span class="blog-date">2026.08.20</span></div><div class="blog-card-content"><h3>Bypassing Modern EDR Hooks via Direct Syscalls &amp; Synthetic Stack Frames</h3><p>Analyzing user-mode API unhooking, dynamic SSN resolution via HalosGate, and synthetic stack spoofing to defeat call-stack telemetry in modern Windows endpoints.</p></div></div><div class="blog-card-footer"><span>7 MIN READ</span><span class="read-arrow">Read article →</span></div></a>
+<!-- BLOG:END -->
   </div>
 </div>
 </section>
@@ -191,12 +306,14 @@
   <div class="tribe-head">
     <div class="label"><span class="red">06</span> / Our tribe</div>
     <h2>The people behind<br>the offense.</h2>
-    <p>A small, focused collective of operators, researchers and exploit developers. </p>
+    <div class="tribe-head-side"><p>A small, focused collective of operators, researchers and exploit developers.</p><a href="tribe/index.html" class="view-all-btn">Meet the tribe →</a></div>
   </div>
   <div class="tribe-grid">
-    <article class="tribe-card"><img class="tribe-photo" src="assets/images/sardor-gulomjonov.webp" alt="Sardor G'ulomjonov" width="640" height="640"><div class="tribe-no">01</div><h3>Sardor G'ulomjonov</h3><span class="tribe-role">AppSec / Penetration Tester</span><p>2 years of total professional experience. Currently works at Davr Bank as an AppSec / Penetration Tester.</p></article>
-    <article class="tribe-card"><img class="tribe-photo" src="assets/images/ibrohim-akbarov.png" alt="Ibrohim Akbarov" width="1254" height="1254"><div class="tribe-no">02</div><h3>Ibrohim Akbarov</h3><span class="tribe-role">Penetration Tester</span><p>7 months as Security Developer at a consulting firm (penetration testing), a 2-month penetration testing internship at the Ministry of Internal Affairs, and 7 months as Chief Cybersecurity Specialist at the State Tax Committee.</p><a class="tribe-cert" href="assets/images/ibrohim-akbarov-htb-solar.png" target="_blank" rel="noopener">Hack The Box: Solar (Mini Pro Lab) ↗</a></article>
-    <article class="tribe-card"><img class="tribe-photo" src="assets/images/hidoyatxon-atabaev.png" alt="Hidoyatxon Atabaev" width="400" height="400"><div class="tribe-no">03</div><h3>Hidoyatxon Atabaev</h3><span class="tribe-role">Vibe Hacker / Developer</span><p>Developer and vibe hacker, building tooling and finding weaknesses with an AI-assisted workflow.</p></article>
+<!-- TRIBE:START -->
+    <article class="tribe-card"><a class="tribe-photo-link" href="tribe/sardor-gulomjonov/"><img class="tribe-photo" src="assets/images/tribe/sardor-gulomjonov.webp" alt="Sardor G'ulomjonov, AppSec / Penetration Tester at OSEC.uz" width="800" height="800"></a><h3><a href="tribe/sardor-gulomjonov/">Sardor G'ulomjonov</a></h3><span class="tribe-role">AppSec / Penetration Tester</span><p>2 years of total professional experience. Currently works at Davr Bank as an AppSec / Penetration Tester.</p></article>
+    <article class="tribe-card"><a class="tribe-photo-link" href="tribe/ibrohim-akbarov/"><img class="tribe-photo" src="assets/images/tribe/ibrohim-akbarov.webp" alt="Ibrohim Akbarov, Penetration Tester at OSEC.uz" width="800" height="800"></a><h3><a href="tribe/ibrohim-akbarov/">Ibrohim Akbarov</a></h3><span class="tribe-role">Penetration Tester</span><p>7 months as Security Developer at a consulting firm (penetration testing), a 2-month penetration testing internship at the Ministry of Internal Affairs, and 7 months as Chief Cybersecurity Specialist at the State Tax Committee.</p><a class="tribe-cert" href="assets/images/ibrohim-akbarov-htb-solar.png" target="_blank" rel="noopener">Hack The Box Mini Pro Labs: Solar ↗</a></article>
+    <article class="tribe-card"><a class="tribe-photo-link" href="tribe/hidoyatxon-atabaev/"><img class="tribe-photo" src="assets/images/tribe/hidoyatxon-atabaev.webp" alt="Hidoyatxon Atabaev, Vibe Hacker / Developer at OSEC.uz" width="800" height="800"></a><h3><a href="tribe/hidoyatxon-atabaev/">Hidoyatxon Atabaev</a></h3><span class="tribe-role">Vibe Hacker / Developer</span><p>Developer and vibe hacker, building tooling and finding weaknesses with an AI-assisted workflow.</p></article>
+<!-- TRIBE:END -->
   </div>
 </div>
 </section>
@@ -221,6 +338,7 @@
   <div>© 2026 OSEC.uz · Offensive security & security validation</div>
   <div class="footer-links">
     <a href="blog/index.html">Blog</a>
+    <a href="tribe/index.html">Our Tribe</a>
     <a href="admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
     <a href="http://orqoyin.uz" target="_blank" rel="noopener">Orqoyin</a>
     <a href="https://t.me/hidoyatiyy" target="_blank" rel="noopener">@hidoyatiyy</a>
