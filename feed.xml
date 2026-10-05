@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>OSEC.uz Blog</title>
+  <link>https://osec.uz/blog/</link>
+  <description>Offensive security research, tradecraft and advisories from OSEC.uz.</description>
+  <language>en</language>
+  <atom:link href="https://osec.uz/feed.xml" rel="self" type="application/rss+xml"/>
+  <item><title>MediaTek BROM orqali Android Gatekeeper Pattern Extraction (Redmi 9A Forensics)</title><link>https://osec.uz/blog/mtk-gatekeeper-pattern-extraction.html</link><guid isPermaLink="true">https://osec.uz/blog/mtk-gatekeeper-pattern-extraction.html</guid><pubDate>Sat, 29 Aug 2026 00:00:00 GMT</pubDate><description>MediaTek chipsetli Android (Redmi 9A) qurilmalarida MTKClient va BROM rejimi orqali to'liq userdata.img dumpini olish, Gatekeeper credential materiallarini ajratish va offline pattern tahlili.</description></item>
+  <item><title>Gov't website has been taken down by hackers</title><link>https://osec.uz/blog/gov-t-website-has-been-taken-down-by-hackers.html</link><guid isPermaLink="true">https://osec.uz/blog/gov-t-website-has-been-taken-down-by-hackers.html</guid><pubDate>Thu, 27 Aug 2026 00:00:00 GMT</pubDate><description>Team_CC allegedly hacked one of the subdomains of Niger gov't website</description></item>
+  <item><title>Bypassing Modern EDR Hooks via Direct Syscalls &amp; Synthetic Stack Frames</title><link>https://osec.uz/blog/bypassing-edr-syscalls.html</link><guid isPermaLink="true">https://osec.uz/blog/bypassing-edr-syscalls.html</guid><pubDate>Thu, 20 Aug 2026 00:00:00 GMT</pubDate><description>Analyzing user-mode API unhooking, dynamic SSN resolution via HalosGate, and synthetic stack spoofing to defeat call-stack telemetry in modern Windows endpoints.</description></item>
+  <item><title>Lateral Movement in Hybrid Active Directory &amp; Entra ID Environments</title><link>https://osec.uz/blog/active-directory-attack-paths.html</link><guid isPermaLink="true">https://osec.uz/blog/active-directory-attack-paths.html</guid><pubDate>Tue, 11 Aug 2026 00:00:00 GMT</pubDate><description>Chaining certificate template misconfigurations (AD CS ESC1), msDS-KeyCredentialLink shadow credentials, and seamless SSO synchronization tokens into cross-boundary domain compromise.</description></item>
+  <item><title>Broken Object Level Auth &amp; State Desync in Banking API Microservices</title><link>https://osec.uz/blog/fintech-api-logic-flaws.html</link><guid isPermaLink="true">https://osec.uz/blog/fintech-api-logic-flaws.html</guid><pubDate>Wed, 29 Jul 2026 00:00:00 GMT</pubDate><description>Case study on discovering distributed race conditions and BOLA vulnerabilities in real-time transaction clearing pipelines under HTTP/2 multiplexing.</description></item>
+</channel>
+</rss>

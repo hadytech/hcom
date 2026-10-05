@@ -1,0 +1,34 @@
+name: Rebuild SEO assets
+
+# Keeps blog pages, sitemap.xml, feed.xml and the tribe/service pages in sync
+# when posts or tribe data change (including posts published from /admin).
+on:
+  push:
+    branches: [main]
+    paths:
+      - posts.json
+      - posts/**
+      - tribe.json
+      - services.json
+      - build.js
+      - build-seo.js
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node build.js && node build-seo.js
+      - name: Commit generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "Rebuild SEO assets [skip ci]"
+          git push

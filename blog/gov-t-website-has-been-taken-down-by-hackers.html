@@ -16,6 +16,7 @@
 <meta property="og:title" content="Gov't website has been taken down by hackers — OSEC Blog">
 <meta property="og:description" content="Team_CC allegedly hacked one of the subdomains of Niger gov't website">
 <meta property="og:site_name" content="OSEC.uz">
+<meta property="og:image" content="https://osec.uz/assets/images/og-cover.png">
 <meta property="article:published_time" content="2026-08-27">
 <meta property="article:author" content="OSEC RESEARCH TEAM">
 
@@ -23,6 +24,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://osec.uz/blog/gov-t-website-has-been-taken-down-by-hackers.html">
 <meta name="twitter:title" content="Gov't website has been taken down by hackers — OSEC Blog">
+<meta name="twitter:image" content="https://osec.uz/assets/images/og-cover.png">
 <meta name="twitter:description" content="Team_CC allegedly hacked one of the subdomains of Niger gov't website">
 <meta name="twitter:creator" content="@hidoyatiyy">
 
@@ -30,23 +32,67 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Gov't website has been taken down by hackers",
-  "description": "Team_CC allegedly hacked one of the subdomains of Niger gov't website",
-  "datePublished": "2026-08-27",
-  "mainEntityOfPage": "https://osec.uz/blog/gov-t-website-has-been-taken-down-by-hackers.html",
-  "author": {
-    "@type": "Person",
-    "name": "OSEC RESEARCH TEAM"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "OSEC.uz",
-    "url": "https://osec.uz/"
-  }
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "headline": "Gov't website has been taken down by hackers",
+      "description": "Team_CC allegedly hacked one of the subdomains of Niger gov't website",
+      "datePublished": "2026-08-27",
+      "dateModified": "2026-08-27",
+      "image": "https://osec.uz/assets/images/og-cover.png",
+      "mainEntityOfPage": "https://osec.uz/blog/gov-t-website-has-been-taken-down-by-hackers.html",
+      "author": {
+        "@type": "Organization",
+        "name": "OSEC RESEARCH TEAM"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://osec.uz/#organization",
+        "name": "OSEC.uz",
+        "url": "https://osec.uz/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://osec.uz/assets/images/og-cover.png"
+        }
+      },
+      "isPartOf": {
+        "@type": "Blog",
+        "@id": "https://osec.uz/blog/#blog",
+        "name": "OSEC.uz Security Blog",
+        "url": "https://osec.uz/blog/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "OSEC.uz",
+          "item": "https://osec.uz/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://osec.uz/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Gov't website has been taken down by hackers",
+          "item": "https://osec.uz/blog/gov-t-website-has-been-taken-down-by-hackers.html"
+        }
+      ]
+    }
+  ]
 }
 </script>
 
+<link rel="alternate" type="application/rss+xml" title="OSEC.uz Blog" href="https://osec.uz/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="../style.css">
 </head>
 
@@ -58,6 +104,7 @@
   <div class="nav-right">
     <a href="../index.html#surface">Explore</a>
     <a href="index.html" class="active nav-accent">Blog</a>
+    <a href="../tribe/index.html">Our Tribe</a>
     <a href="../index.html#contact">Engage →</a>
   </div>
 </div>
@@ -134,6 +181,8 @@ Gh0st@Terminal</p>
   <div class="footer-links">
     <a href="index.html">Blog</a>
     <a href="../index.html">Home</a>
+    <a href="../tribe/index.html">Our Tribe</a>
+    <a href="../services/index.html">Services</a>
     <a href="../admin/index.html" class="mono" style="opacity:0.6">[Admin]</a>
     <a href="mailto:offseckh@icloud.com">Secure mail</a>
   </div>

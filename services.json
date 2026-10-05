@@ -1,0 +1,132 @@
+[
+  {
+    "slug": "penetration-testing",
+    "name": "Penetration Testing",
+    "title": "Penetration Testing in Uzbekistan | OSEC.uz",
+    "desc": "Manual penetration testing for web applications, APIs, mobile apps, networks and Active Directory by the OSEC.uz team in Uzbekistan. Validated findings with a clear fix path.",
+    "h1": "Penetration testing that proves impact.",
+    "lead": "OSEC.uz tests whether weaknesses in your applications, APIs and networks combine into realistic attack paths, then documents each one with technical evidence and a prioritized fix.",
+    "covers": [
+      "Web applications and business-logic flaws",
+      "REST and GraphQL APIs, including fintech and payment flows",
+      "Mobile applications",
+      "External and internal network assessments",
+      "Active Directory and identity attack paths",
+      "Source code review"
+    ],
+    "gets": [
+      "A scoped test plan agreed before work starts",
+      "Manual testing on top of automated scanning",
+      "Reproducible proof for every validated finding",
+      "Remediation guidance ranked by real-world impact",
+      "A retest to confirm fixes"
+    ],
+    "related": [
+      [
+        "Fintech API logic flaws",
+        "blog/fintech-api-logic-flaws.html"
+      ],
+      [
+        "Active Directory attack paths",
+        "blog/active-directory-attack-paths.html"
+      ]
+    ],
+    "uz": [
+      "Penetratsion testlash (pentest)",
+      "Veb-ilovalar, API, mobil ilovalar, tarmoq va Active Directory'ni qo'lda sinash. Har bir topilma dalil va tuzatish yo'li bilan taqdim etiladi."
+    ]
+  },
+  {
+    "slug": "red-teaming",
+    "name": "Red Teaming",
+    "title": "Red Team Assessments in Uzbekistan | OSEC.uz",
+    "desc": "Objective-based red team assessments and adversary emulation by OSEC.uz. Test your people, process and detection against a realistic attacker, not a checklist.",
+    "h1": "Red teaming against a real adversary model.",
+    "lead": "A red team assessment asks one question: could an attacker reach what matters to you, and would you notice? OSEC.uz emulates realistic adversary tradecraft against agreed objectives and reports what worked, what was detected, and what to change.",
+    "covers": [
+      "Objective-based adversary emulation",
+      "Initial access and lateral movement",
+      "Endpoint detection and response (EDR) evasion research",
+      "Identity and Active Directory abuse",
+      "Detection and response gap analysis"
+    ],
+    "gets": [
+      "Rules of engagement and objectives defined up front",
+      "Attack narrative mapped to MITRE ATT&CK",
+      "Findings tied to detection opportunities",
+      "A debrief with your defenders"
+    ],
+    "related": [
+      [
+        "Bypassing EDR syscalls",
+        "blog/bypassing-edr-syscalls.html"
+      ],
+      [
+        "Active Directory attack paths",
+        "blog/active-directory-attack-paths.html"
+      ]
+    ],
+    "uz": [
+      "Red Team",
+      "Real hujumchi modeliga qarshi maqsadga yo'naltirilgan baholash: himoyangiz hujumni payqaydimi?"
+    ]
+  },
+  {
+    "slug": "attack-surface-validation",
+    "name": "Attack Surface Validation",
+    "title": "Attack Surface Validation & Discovery | OSEC.uz",
+    "desc": "Continuous attack surface discovery and validation by OSEC.uz: find exposed services, test whether they are exploitable, and focus remediation on what an attacker can actually reach.",
+    "h1": "Don't count vulnerabilities. Validate attack paths.",
+    "lead": "Scanners list issues; attackers chain them. OSEC.uz maps your external and internal surface, tests which exposures are reachable and exploitable, and shows the path an attacker would take.",
+    "covers": [
+      "External perimeter and internet-facing assets",
+      "Application and API exposure",
+      "Internal network and trust boundaries",
+      "Cloud, configuration and infrastructure exposure"
+    ],
+    "gets": [
+      "An inventory of what is actually exposed",
+      "Exploitability tested, not assumed",
+      "Findings ranked by attack path, not by scanner score",
+      "A route to remediation your engineers can act on"
+    ],
+    "related": [],
+    "uz": [
+      "Hujum yuzasini tekshirish",
+      "Zaifliklarni sanash emas, balki hujumchi bosib o'tishi mumkin bo'lgan haqiqiy yo'llarni tekshirish."
+    ]
+  },
+  {
+    "slug": "exploit-development-vulnerability-research",
+    "name": "Exploit Development & Vulnerability Research",
+    "title": "Exploit Development & Vulnerability Research | OSEC.uz",
+    "desc": "Original vulnerability research, exploit development and hardware forensics by OSEC.uz, published with coordinated disclosure.",
+    "h1": "Original vulnerability research.",
+    "lead": "OSEC.uz researches vulnerabilities and attacker tradecraft directly, from endpoint evasion to mobile and hardware forensics, and publishes the results with coordinated disclosure.",
+    "covers": [
+      "Vulnerability research and root-cause analysis",
+      "Proof-of-concept exploit development",
+      "Mobile and hardware forensics",
+      "Coordinated vulnerability disclosure"
+    ],
+    "gets": [
+      "Technical write-ups with reproducible steps",
+      "Impact analysis and mitigation advice",
+      "Responsible disclosure handling"
+    ],
+    "related": [
+      [
+        "MediaTek BROM Gatekeeper pattern extraction",
+        "blog/mtk-gatekeeper-pattern-extraction.html"
+      ],
+      [
+        "Bypassing EDR syscalls",
+        "blog/bypassing-edr-syscalls.html"
+      ]
+    ],
+    "uz": [
+      "Exploit ishlab chiqish va zaifliklarni tadqiq qilish",
+      "Zaifliklarni mustaqil tadqiq qilish va mas'uliyatli oshkor qilish."
+    ]
+  }
+]
